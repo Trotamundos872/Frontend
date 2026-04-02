@@ -1,0 +1,9 @@
+header nav {
+    position: fixed;
+    display: flex;
+    top: 0;
+    width: auto;
+    right: 0;
+    left: 0;
+    background-color: rgb(47, 47, 47);
+}

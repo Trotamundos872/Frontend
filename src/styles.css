@@ -1,0 +1,67 @@
+
+/*INTENTAR USAR ANGULAR MATERIAL*/
+:root {
+  --color-bg: white;
+  --color-text: #000;
+  --color-dark: rgb(47, 47, 47);
+  --color-border-light: white;
+  --color-border-dark: rgb(47, 47, 47);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body { 
+  height: auto;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+main {
+  margin: auto;
+  margin-top: 20px;
+  max-width: 1050px;
+  padding: 10px;
+}
+
+footer {
+  padding: 0px 20px;
+}
+
+img {
+  width: 100%;
+}
+
+p {
+  text-align: justify;
+}
+
+.addon-row {
+  margin: 0px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.category-container {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+
+header input::placeholder {
+    color: #5a5a5a !important; 
+}
+
+
+footer i {
+  margin: 0px 5px;
+}
+
+.card-ancore {
+  text-decoration: none;
+}
