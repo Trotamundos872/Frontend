@@ -2,16 +2,41 @@
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a  class="nav-link px-2 text-white"  routerLink="/">Home</a></li>
-                <li><a  class="nav-link px-2 text-white" routerLink="/addons">Add-Ons</a></li>
-                
+                <li><a class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap" routerLink="/">
+                        <img src="house-solid-full.svg" style="filter: invert();" width="16" height="16" class="me-2">
+                        Home</a></li>
+                <li><a class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap"
+                        routerLink="/addons">
+                        <img src="hammer-solid-full.svg" style="filter: invert();" width="16" height="16" class="me-2">
+                        Add-Ons</a></li>
             </ul>
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"> <input type="search"
-                    class="form-control form-control-dark text-bg-dark" placeholder="Buscar..." aria-label="Search">
-            </form>
-            <div class="text-end"> <button type="button" class="btn btn-outline-light me-2" (click)="open()">Accede</button> <button
-                    type="button" class="btn btn-warning" (click)="open()">Registrate</button> </div>
+
+            <div class="text-end">
+                <!--NO logueado -->
+                <ng-container *ngIf="!isLoggedIn">
+                    <button type="button" class="btn btn-outline-light me-2" (click)="openLogin()">Accede</button>
+                    <button type="button" class="btn btn-warning" routerLink="/register">Regístrate</button>
+                </ng-container>
+
+                <!-- logueado -->
+                <ng-container *ngIf="isLoggedIn">
+                    <span class="text-white me-3 d-inline-flex align-items-center">
+                        Hola, {{ userName }}
+                    </span>
+                    <span class="mark-divisor"></span>
+
+                    <button type="button" class="btn btn-link ms-2 p-0 btn_menu_mark" (click)="openProfile()">
+                        <img src="user-solid-full.svg" width="25" height="25" style="filter: brightness(0) invert(1);">
+                    </button>
+
+                    <span *ngIf="isCreator" class="mark-divisor"></span>
+
+                    <button *ngIf="isCreator" type="button" class="btn btn-link ms-2 p-0 btn_menu_mark"
+                        routerLink="/creator/home">
+                        <img src="helmet-safety-solid-full.svg" width="30" height="30">
+                    </button>
+                </ng-container>
+            </div>
         </div>
     </div>
 </header>
-

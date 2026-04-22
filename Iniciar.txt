@@ -1,0 +1,6 @@
+cd "c:\Users\Marcos y Ezequiel\Desktop\TFG\Frontend"
+npm.cmd install
+npx.cmd ng serve --port 4200
+
+
+$env:PGPASSWORD="psql"; & "C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -d mydb

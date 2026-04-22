@@ -1,0 +1,71 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-5">
+            <div class="card mb-4 shadow-sm" id="registerCard">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Regístrate</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="usernameInput" class="form-label">Nombre de Usuario:</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="usernameAddon">
+                                    <img src="user-solid-full.svg" width="16" height="16">
+                                </span>
+                                <input type="text" class="form-control" id="usernameInput" name="nombre"
+                                    [(ngModel)]="nombre" aria-describedby="usernameAddon usernameHelp">
+                            </div>
+                            <div class="form-text" id="usernameHelp">Tu Nickname que se mostrará a los demás usuarios.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="emailInput" class="form-label">Correo Electrónico:</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="emailAddon">
+                                    <img src="envelope-solid-full.svg" width="16" height="16">
+                                </span>
+                                <input type="email" class="form-control" id="emailInput" name="email"
+                                    [(ngModel)]="email" aria-describedby="emailAddon emailHelp">
+                            </div>
+                            <div id="emailHelp" class="form-text">Correo personal que usaremos para contactarte de forma
+                                privada.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordInput" class="form-label">Contraseña:</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="passwordAddon">
+                                    <img src="key-solid-full.svg" width="16" height="16">
+                                </span>
+                                <input type="password" class="form-control" id="passwordInput" name="password"
+                                    [(ngModel)]="password" aria-describedby="passwordAddon">
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="button" class="btn btn-primary" [disabled]="loading"
+                                (click)="registerUsuario()">
+                                {{ loading ? 'Registrando...' : 'Regístrate' }}
+                            </button>
+                        </div>
+
+                        <div *ngIf="loading" class="text-center mt-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+
+
+                        <div *ngIf="registerStatus" class="alert mt-3 d-flex align-items-center"
+                            [ngClass]="registerStatusClass" role="alert">
+
+                            <div>
+                                {{ registerStatus }}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

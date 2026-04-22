@@ -1,0 +1,65 @@
+@font-face {
+    font-family: 'Glyphicons Halflings scoped';
+    src: url('https://netdna.bootstrapcdn.com/bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot');
+    src: url('https://netdna.bootstrapcdn.com/bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+        url('https://netdna.bootstrapcdn.com/bootstrap/3.0.0/fonts/glyphicons-halflings-regular.woff') format('woff'),
+        url('https://netdna.bootstrapcdn.com/bootstrap/3.0.0/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+        url('https://netdna.bootstrapcdn.com/bootstrap/3.0.0/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+}
+
+::ng-deep .md-container .glyphicon {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings scoped';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::ng-deep .md-container .glyphicon-bold::before {
+    content: "\e048";
+}
+
+::ng-deep .md-container .glyphicon-italic::before {
+    content: "\e049";
+}
+
+::ng-deep .md-container .glyphicon-list::before {
+    content: "\e056";
+}
+
+::ng-deep .md-container .glyphicon-th-list::before {
+    content: "\e011";
+}
+
+::ng-deep .md-container .glyphicon-link::before {
+    content: "\e144";
+}
+
+::ng-deep .md-container .glyphicon-picture::before {
+    content: "\e060";
+}
+
+::ng-deep .md-container .glyphicon-upload::before {
+    content: "\e027";
+}
+
+::ng-deep .md-container .glyphicon-fullscreen::before {
+    content: "\e140";
+}
+
+::ng-deep .md-container .glyphicon-pencil::before {
+    content: "\e065";
+}
+
+::ng-deep .md-container .glyphicon-eye-open::before {
+    content: "\e105";
+}
+
+::ng-deep .md-toolbar .btn-group {
+    display: flex;
+    align-items: center;
+}

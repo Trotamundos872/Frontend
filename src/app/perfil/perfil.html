@@ -1,0 +1,15 @@
+<div class="perfil-container" *ngIf="info">
+  <h1>Perfil de {{ info.nombre }}</h1>
+  <p><strong>Nombre:</strong> {{ info.nombre }}</p>
+  <p><strong>Especialidad:</strong> {{ info.especialidad }}</p>
+</div>
+
+<div class="spinner-carga" *ngIf="loading">
+  <div class="spinner-border text-primary" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+</div>
+
+<div *ngIf="!loading && !info">
+  No se ha encontrado el perfil.
+</div>

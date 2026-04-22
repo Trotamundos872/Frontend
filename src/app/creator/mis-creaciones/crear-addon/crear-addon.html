@@ -1,0 +1,88 @@
+<div class="col-md-12 ">
+  <div class="card mb-4 shadow-sm" id="registerCard">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Crear Nueva Proyecto</h5>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="nombreProyectoInput" class="form-label">Nombre del Proyecto:</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="nombreProyectoInput" name="nombre"
+              [(ngModel)]="addonData.nombre" required>
+          </div>
+          <div id="nombreProyectoHelp" class="form-text">Nombre del proyecto que se mostrará a los demás usuarios.
+            (2-60 Caracteres)</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="miniaturaInput" class="form-label">URL de Miniatura:</label>
+          <div class="input-group">
+            <input type="url" class="form-control" id="miniaturaInput" name="urlMiniatura"
+              [(ngModel)]="addonData.urlMiniatura">
+          </div>
+          <div id="nombreProyectoHelp" class="form-text">URL de la miniatura del proyecto.</div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="tipoSelect" class="form-label">Tipo:</label>
+            <select class="form-select" id="tipoSelect" name="tipo" [(ngModel)]="addonData.tipo" required>
+              <option value="" disabled selected>Selecciona un tipo...</option>
+              <option value="addon">Add-On</option>
+              <option value="mapa">Mapa</option>
+              <option value="skin">Skin</option>
+            </select>
+            <div id="tipoHelp" class="form-text">Selecciona el tipo de proyecto que vas a publicar.</div>
+          </div>
+          <div class="col">
+            <label for="tagSelect" class="form-label">Tag:</label>
+            <select class="form-select" id="tagSelect" name="tag" [(ngModel)]="addonData.tag" required>
+              <option value="" disabled selected>Selecciona una categoría...</option>
+              <option value="decoracion">Decoración</option>
+              <option value="aventura">Aventura</option>
+              <option value="mejora">Mejora</option>
+              <option value="supervivencia">Supervivencia</option>
+              <option value="pvp">PvP</option>
+              <option value="minijuego">Minijuego</option>
+            </select>
+            <div id="tagHelp" class="form-text">Selecciona la categoría que mejor describe tu proyecto.</div>
+          </div>
+        </div>
+        <br>
+
+        <div class="mb-3">
+          <label for="descripcionInput" class="form-label">Descripción:</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="descripcionInput" name="descripcion"
+              [(ngModel)]="addonData.descripcion" required>
+          </div>
+          <div id="descripcionHelp" class="form-text">Resumen del proyecto (5-1000 Caracteres)</div>
+        </div>
+
+        <div class="mb-3">
+          <div class="input-group">
+            <textarea class="form-control" id="descripcionTextarea" aria-label="With textarea"></textarea>
+          </div>
+          <div id="descripcionTextareaHelp" class="form-text">Descripción Detallada del proyecto (minimo 5 caracteres)
+          </div>
+        </div>
+
+        <div class="d-grid mt-4">
+
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3 d-flex align-items-center" role="alert">
+          <div>{{ errorMessage }}</div>
+        </div>
+
+        <div *ngIf="successMessage" class="alert alert-success mt-3 d-flex align-items-center" role="alert">
+          <div>{{ successMessage }}</div>
+        </div>
+        <button type="submit" class="btn btn-dark">Publicar</button>
+        <div id="descripcionHelp" class="form-text">Al publicar tu proyecto, aceptas los términos y condiciones. Luego
+          subirar los archivos del proyecto.</div>
+      </form>
+    </div>
+  </div>
+</div>

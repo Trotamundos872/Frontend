@@ -7,18 +7,56 @@
 </ng-container>
 
 <ng-container *ngIf="!loading && valoresAddon">
+
+  <p class="h4"><strong>{{ valoresAddon.nombre }}</strong> </p>
   <div class="row">
-    <div class="col-8">
+    <div class="col-8 thumbnail-container">
       <img [src]="valoresAddon.urlMiniatura" class="img-fluid rounded" alt="Image of {{ valoresAddon.nombre }}">
     </div>
     <div class="col-4">
       <div class="card" style="width: 18rem;">
-        <div class="card-header">{{ valoresAddon.nombre }}</div>
+
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">{{ valoresAddon.descripcion }}</li>
-          <li class="list-group-item">{{ valoresAddon.likes }}</li>
+
+          <li class="list-group-item"><strong>Descripción: </strong>{{ valoresAddon.descripcion | slice:0:100 }}{{
+            (valoresAddon.descripcion?.length
+            ?? 0) > 100 ? '...' : '' }}
+
+          </li>
+          <li class="list-group-item">
+            <strong>Creadores: </strong>
+
+            <ng-container *ngFor="let nombre of valoresAddon.nombresCreadores; let i = index">
+              <a
+                *ngIf="valoresAddon.idsCreadores?.[i] != null; else creadorSinId"
+                [routerLink]="['/perfil', valoresAddon.idsCreadores?.[i]]"
+                class="badge bg-dark-subtle text-dark-emphasis rounded-pill me-1 creator-pill-link">
+                {{ nombre }}
+              </a>
+              <ng-template #creadorSinId>
+                <span class="badge bg-dark-subtle text-dark-emphasis rounded-pill me-1">
+                  {{ nombre }}
+                </span>
+              </ng-template>
+            </ng-container>
+
+          </li>
+
+          <li class="list-group-item">
+            <strong>Tags: </strong>
+            <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">{{
+              valoresAddon.tipo }}</span>&nbsp;<span
+              class="badge bg-warning-subtle text-warning-emphasis rounded-pill">{{
+              valoresAddon.tag }}</span>
+
+          </li>
         </ul>
       </div>
     </div>
+
+    <div class="card p-4 mt-3">
+      <div class="markdown-content" [innerHTML]="valoresAddon.textoAddon | markdown"></div>
+    </div>
+
   </div>
 </ng-container>

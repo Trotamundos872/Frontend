@@ -1,0 +1,23 @@
+/* Styles for mis-creaciones */
+.card-dashboard {
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.topbar {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.list-img {
+  width: 120px !important;
+  height: 40px !important;
+  object-fit: cover !important;
+  border-radius: 8px;
+  margin-right: 15px;
+  border: 1px solid var(--bs-border-color);
+}

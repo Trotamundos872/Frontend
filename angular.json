@@ -36,6 +36,7 @@
               "entry": "src/server.ts"
             },
             "polyfills": [
+              "zone.js",
               "@angular/localize/init"
             ]
           },

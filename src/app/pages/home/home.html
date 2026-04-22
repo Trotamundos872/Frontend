@@ -1,8 +1,24 @@
 <p class="h4">Ultimos Add-Ons</p>
 <hr>
 
+<div class="mb-4 d-flex">
+ 
+  <input #searchInput type="text" class="form-control me-2" placeholder="Buscar add-on..."
+    (keyup.enter)="onSearch(searchInput.value)">
+  <button class="btn btn-primary d-flex align-items-center justify-content-center"
+    (click)="onSearch(searchInput.value)">
+    <img src="magnifying-glass-solid-full.svg" width="16" height="16" style="filter: brightness(0) invert(1);">
+  </button>
+</div>
+
 <ng-container *ngIf="!loading && !errorLoading; else statusTemplate">
-  <div id="addon-row" class="row addon-row" data-masonry="{&quot;percentPosition&quot;: true }">
+
+  <div *ngIf="valores.length === 0" class="alert alert-danger" role="alert">
+    No Se Han encontrado Add-Ons
+  </div>
+
+  <div *ngIf="valores.length > 0" id="addon-row" class="row addon-row"
+    data-masonry="{&quot;percentPosition&quot;: true }">
     <div class="row">
       <div class="col-sm-6 col-lg-4 mb-4" *ngFor="let addonCard of valores">
         <a class="card-ancore" [routerLink]="['/addon', addonCard.id]">
@@ -10,12 +26,16 @@
             <img [src]="addonCard.urlMiniatura" class="card-img-top" alt="Image of {{ addonCard.nombre }}">
             <div class="card-body">
               <h5 class="card-title">{{ addonCard.nombre }} </h5>
-              <p class="card-text">{{ addonCard.descripcion }}</p>
-              <span class="category-container">
-                <!-- <span class="badge bg-dark-subtle text-dark-emphasis rounded-pill">Creador Por {{ addon.creador}}</span> -->
-                <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">Categoria 1</span> <span
-                  class="badge bg-warning-subtle text-warning-emphasis rounded-pill">Categoria 2</span><span
-                  class="badge bg-warning-subtle text-warning-emphasis rounded-pill">Categoria 3</span>
+              <p class="card-text">{{ addonCard.descripcion | slice:0:100 }}{{
+                (addonCard.descripcion?.length
+                ?? 0) > 100 ? '...' : '' }}</p>
+              <span class="category-container d-block mt-2">
+                <span *ngFor="let nombre of addonCard.nombresCreadores"
+                  class="badge bg-dark-subtle text-dark-emphasis rounded-pill me-1">
+                  Por {{ nombre }}
+                </span>
+                <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">{{addonCard.tipo}}</span>&nbsp;
+                <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">{{addonCard.tag}}</span>
               </span>
             </div>
           </div>
@@ -26,7 +46,13 @@
 </ng-container>
 
 <ng-template #statusTemplate>
-  <p *ngIf="loading">Cargando...</p>
+
+  <div class="spinner-carga" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
   <p *ngIf="errorLoading">Error al cargar addons. Recarga la página.</p>
   <p *ngIf="!loading && !valores.length && !errorLoading">No hay addons disponibles.</p>
 </ng-template>
