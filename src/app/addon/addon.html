@@ -1,20 +1,24 @@
 <ng-container *ngIf="loading">
-  <p>Cargando addon...</p>
+  <p>Cargando proyecto...</p>
 </ng-container>
 
 <ng-container *ngIf="!loading && !valoresAddon">
-  <p>No se encontró el addon.</p>
+  <p>No se encontró el proyecto.</p>
 </ng-container>
 
 <ng-container *ngIf="!loading && valoresAddon">
 
-  <p class="h4"><strong>{{ valoresAddon.nombre }}</strong> </p>
+  <p class="h4 mb-3"><strong>{{ valoresAddon.nombre }}</strong> </p>
   <div class="row">
-    <div class="col-8 thumbnail-container">
-      <img [src]="valoresAddon.urlMiniatura" class="img-fluid rounded" alt="Image of {{ valoresAddon.nombre }}">
+
+    <div class="col-12 col-md-8 mb-3">
+      <div class="thumbnail-container">
+        <img [src]="valoresAddon.urlMiniatura" class="img-fluid rounded" alt="Image of {{ valoresAddon.nombre }}">
+      </div>
     </div>
-    <div class="col-4">
-      <div class="card" style="width: 18rem;">
+
+    <div class="col-12 col-md-4 mb-3">
+      <div class="card info-card w-100">
 
         <ul class="list-group list-group-flush">
 
@@ -27,8 +31,7 @@
             <strong>Creadores: </strong>
 
             <ng-container *ngFor="let nombre of valoresAddon.nombresCreadores; let i = index">
-              <a
-                *ngIf="valoresAddon.idsCreadores?.[i] != null; else creadorSinId"
+              <a *ngIf="valoresAddon.idsCreadores?.[i] != null; else creadorSinId"
                 [routerLink]="['/perfil', valoresAddon.idsCreadores?.[i]]"
                 class="badge bg-dark-subtle text-dark-emphasis rounded-pill me-1 creator-pill-link">
                 {{ nombre }}
@@ -50,12 +53,76 @@
               valoresAddon.tag }}</span>
 
           </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="like-container d-flex align-items-center" (click)="darLike()" [class.disabled]="likeLoading">
+              <img src="/heart-solid-full.svg" class="like-heart me-2" [class.loading]="likeLoading" alt="Like heart">
+              <strong>{{ valoresAddon.likes || 0 }}</strong>
+            </div>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <!-- <strong>Compartir en: </strong> <img src="/link-solid-full.svg" class="like-heart"alt="compartir enlace" width="10" height="10"> <img src="/link-solid-full.svg" class="like-heart me-2"alt="compartir twitter"> -->
+          </li>
         </ul>
       </div>
     </div>
 
-    <div class="card p-4 mt-3">
-      <div class="markdown-content" [innerHTML]="valoresAddon.textoAddon | markdown"></div>
+    <div class="col-12 mt-2">
+      <div class="card p-3 p-md-4">
+        <div class="markdown-content" [innerHTML]="valoresAddon.textoAddon | markdown"></div>
+      </div>
+    </div>
+
+    <div class="col-12 mt-2">
+      <p class="h4 mb-3">Descargas</p>
+      <div class="card p-3 p-md-4">
+        <div *ngIf="archivos.length === 0" class="text-center py-4">
+          <p class="text-muted mb-0">No hay archivos disponibles para este addon.</p>
+        </div>
+        <table *ngIf="archivos.length > 0" class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Versión</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Descarga</th>
+              <th scope="col">Cambios</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let archivo of archivos; let i = index">
+              <tr>
+                <th scope="row">{{ archivo.versionAddon }}</th>
+                <td>{{ archivo.fecha | date:'dd/MM/yyyy' }}</td>
+                <td>{{ archivo.tipo }}</td>
+                <td>
+                  <a [href]="archivo.url" target="_blank" class="badge bg-primary text-decoration-none">Descargar</a>
+                </td>
+                <td>
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    [attr.data-bs-target]="'#flush-collapse' + i" aria-expanded="false" 
+                    [attr.aria-controls]="'flush-collapse' + i">
+                    <img src="/angle-down-solid-full.svg" class="me-2" alt="abrir changelog" width="20" height="20">
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="5" class="p-0">
+                  <div class="accordion accordion-flush" [id]="'accordionFlush' + i">
+                    <div class="accordion-item">
+                      <div [id]="'flush-collapse' + i" class="accordion-collapse collapse"
+                        [attr.data-bs-parent]="'#accordionFlush' + i">
+                        <div class="accordion-body">
+                          {{ archivo.registroCambios || 'No hay registro de cambios para esta versión.' }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </div>

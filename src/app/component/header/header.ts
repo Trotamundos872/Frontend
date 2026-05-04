@@ -4,8 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap/modal';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { of, timeout, catchError } from 'rxjs';
+import { ThemeService } from '../../services/theme.service';
+import { Inbox } from '../inbox/inbox';
+import { Addons } from '../../services/addons';
 
 //MODAL de login
 @Component({
@@ -100,52 +103,70 @@ export class NgbdModalContent {
       },
       error: (err) => {
         this.loading = false;
-        let errorMessage = err.error?.message || err.statusText || "Error desconocido";
-        this.loginStatus = "Error en login (Código " + err.status + "): " + errorMessage;
+        this.loginStatus = "Credenciales incorrectas o error en el servidor.";
         this.loginStatusClass = "alert-danger";
       }
     });
   }
 }
 
+//MODAL de usuario (Ajustes)
 @Component({
   selector: 'app-modal-user-content',
   standalone: true,
   imports: [CommonModule, NgbModule],
   template: `
     <div class="modal-header">
-      <h4 class="modal-title">Mi Perfil</h4>
-      <button type="button" class="btn-close" (click)="activeModal.dismiss()"></button>
+      <h4 class="modal-title">Ajustes de Usuario</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
     </div>
-    <div class="modal-body text-center">
-        <div class="mb-3">
-            <img src="user-solid-full.svg" width="60" height="60" class="mb-2">
-            <h4>{{ userName }}</h4>
-            <p class="text-muted">{{ email }}</p>
+    <div class="modal-body">
+      <div class="d-flex align-items-center mb-4">
+        <div class="flex-shrink-0">
+          <img src="user-solid-full.svg" width="60" height="60" class="rounded-circle bg-light p-2">
         </div>
-
-      <div *ngIf="!isCreator">
-        <hr>
-        <p>¿Quieres compartir tus propios Add-Ons?</p>
-        <button class="btn btn-warning w-100" (click)="becomeCreator()" [disabled]="loading">
-          {{ loading ? 'Procesando...' : 'Convertirme en Creador' }}
-        </button>
-
-        <div *ngIf="statusMessage" class="alert mt-3" [ngClass]="statusClass" role="alert">
-          {{ statusMessage }}
+        <div class="flex-grow-1 ms-3">
+          <h5 class="mb-0">{{ userName }}</h5>
+          <p class="text-muted mb-0">{{ email }}</p>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-danger w-100" (click)="logout()">Cerrar Sesión</button>
+
+      <div class="list-group list-group-flush">
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+          <div>
+            <h6 class="mb-0">Modo Oscuro</h6>
+            <small class="text-muted">Haz Click para alternar el tema</small>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="darkModeSwitch" 
+                   [checked]="themeService.darkMode$ | async" (change)="toggleTheme()">
+          </div>
+        </div>
+        
+        <div *ngIf="!isCreator" class="list-group-item px-0 py-3">
+          <button class="btn btn-warning w-100" (click)="becomeCreator()" [disabled]="loading">
+            Convertirme en Creador
+          </button>
+          <div *ngIf="statusMessage" class="alert mt-2" [ngClass]="statusClass">
+            {{ statusMessage }}
+          </div>
+        </div>
+
+        <div class="list-group-item px-0 py-3">
+          <button class="btn btn-outline-danger w-100" (click)="logout()">
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
     </div>
   `,
 })
 export class NgbdUserModalContent {
   activeModal = inject(NgbActiveModal);
   private http = inject(HttpClient);
-  private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
+  private cdr = inject(ChangeDetectorRef);
+  public themeService = inject(ThemeService);
 
   @Input() userName = '';
   @Input() email = '';
@@ -154,6 +175,10 @@ export class NgbdUserModalContent {
   loading = false;
   statusMessage = '';
   statusClass = '';
+
+  toggleTheme() {
+    this.themeService.toggleDarkMode();
+  }
 
   logout() {
     this.activeModal.close('logout');
@@ -193,6 +218,26 @@ export class NgbdUserModalContent {
   }
 }
 
+//MODAL de Bandeja de Entrada
+@Component({
+  selector: 'app-modal-inbox-content',
+  standalone: true,
+  imports: [CommonModule, Inbox],
+  template: `
+    <div class="modal-header">
+      <h4 class="modal-title">Bandeja de Entrada</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+    </div>
+    <div class="modal-body p-0">
+      <app-inbox [subscritos]="subscritos" [loading]="loading" (click)="activeModal.dismiss()"></app-inbox>
+    </div>
+  `,
+})
+export class NgbdInboxModalContent {
+  activeModal = inject(NgbActiveModal);
+  @Input() subscritos: any[] = [];
+  @Input() loading = false;
+}
 
 @Component({
   selector: 'app-header',
@@ -206,33 +251,61 @@ export class Header implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
+  private addonsService = inject(Addons);
+  public themeService = inject(ThemeService);
 
   isLoggedIn = false;
   userName = '';
   userEmail = '';
   isCreator = false;
 
+  // Inbox data
+  subscritos: any[] = [];
+  loadingInbox = true;
+
   ngOnInit() {
     this.checkAuth();
+    this.cargarInbox();
+  }
+
+  cargarInbox() {
+    this.loadingInbox = true;
+    this.addonsService.getDetallesSubscritos().subscribe({
+      next: (data) => {
+        this.subscritos = data;
+        this.loadingInbox = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.loadingInbox = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   checkAuth() {
     if (isPlatformBrowser(this.platformId)) {
       const token = localStorage.getItem("jwtToken");
       if (token) {
-        this.isLoggedIn = true;
         // Intentar cargar info del perfil si hay token
-        this.http.get<any>('http://localhost:8080/api/creador/mi-perfil', {
+        this.http.get<any>('http://localhost:8080/api/usuario', {
           headers: { 'Authorization': 'Bearer ' + token }
         }).subscribe({
           next: (res) => {
-            this.userName = res.usuario?.nombre || '';
-            this.userEmail = res.usuario?.email || '';
-            this.isCreator = true;
+            this.isLoggedIn = true;
+            this.userName = res.nombre || '';
+            this.userEmail = res.email || '';
+            this.isCreator = res.esCreador || false;
             this.cdr.detectChanges();
           },
-          error: () => {
+          error: (err) => {
+            console.error('Error verificando token:', err);
+            this.isLoggedIn = false;
             this.isCreator = false;
+            this.userName = '';
+            this.userEmail = '';
+            // Si el token no es válido, lo mejor es borrarlo para no liarla
+            localStorage.removeItem("jwtToken");
             this.cdr.detectChanges();
           }
         });
@@ -276,14 +349,23 @@ export class Header implements OnInit {
     modalRef.componentInstance.email = this.userEmail;
     modalRef.componentInstance.isCreator = this.isCreator;
 
-    modalRef.result.then((result) => {
-      if (result === 'logout') {
-        this.logout();
-      } else if (result === 'reload') {
-        if (isPlatformBrowser(this.platformId)) {
-          window.location.reload();
+    modalRef.result.then(
+      (result) => {
+        if (result === 'logout') {
+          this.logout();
+        } else if (result === 'reload') {
+          if (isPlatformBrowser(this.platformId)) {
+            window.location.reload();
+          }
         }
-      }
-    }, () => { });
+      },
+      (reason) => { }
+    );
+  }
+
+  openInbox() {
+    const modalRef = this.modalService.open(NgbdInboxModalContent);
+    modalRef.componentInstance.subscritos = this.subscritos;
+    modalRef.componentInstance.loading = this.loadingInbox;
   }
 }

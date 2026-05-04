@@ -1,4 +1,4 @@
-<div class="topbar d-flex justify-content-between align-items-center">
+<div class="topbar d-flex justify-content-between align-items-center mb-4">
   <div>
     <h2 class="mb-0">Estadísticas</h2>
     <small class="text-muted">Rendimiento de tus proyectos</small>
@@ -7,10 +7,46 @@
 
 <div class="row g-4">
   <div class="col-12">
-    <div class="card card-dashboard p-4">
-      <h5 class="mb-3">Visitas mensuales</h5>
+    <div class="card card-dashboard p-4 shadow-sm border-0">
+      <h5 class="mb-4 text-primary fw-bold">Rendimiento de Versiones Recientes</h5>
 
-     
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-warning" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && filas.length === 0" class="alert alert-light border-0 text-center py-4">
+        <img src="house-solid-full.svg" width="40" height="40" class="mb-3 opacity-25" style="filter: grayscale(1);">
+        <p class="text-muted mb-0">Aún no tienes archivos publicados para generar estadísticas.</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="!loading && filas.length > 0">
+        <table class="table table-bordered align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col" style="width: 150px;">Fecha</th>
+              <th scope="col" *ngFor="let name of addonNames" class="text-center">{{ name }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fila of filas">
+              <td class="bg-light fw-bold text-muted small">{{ fila.rawDate | date:'dd/MM/yyyy' }}</td>
+              <td *ngFor="let name of addonNames" class="text-center">
+                <div *ngIf="fila[name] !== undefined">
+                  <span class="fs-5 fw-bold text-primary">{{ fila[name] }}</span>
+                  <div class="smaller text-muted">descargas</div>
+                </div>
+                <span *ngIf="fila[name] === undefined" class="text-muted opacity-25">-</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="mt-3 text-end" *ngIf="!loading && filas.length > 0">
+        <small class="text-muted italic">* Solo se muestra la estadística de la versión más reciente por proyecto.</small>
+      </div>
     </div>
   </div>
 </div>

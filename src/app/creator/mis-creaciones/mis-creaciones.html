@@ -25,6 +25,7 @@
             <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill ms-1 text-uppercase">{{ addon.tipo }}</span>
           </strong>
           <span>
+            <a [routerLink]="['subir-archivo', addon.id]">Subir Archivo</a> | 
             <a href="#">Editar</a> | 
             <a [routerLink]="['/addon', addon.id]">Ver</a>
           </span>

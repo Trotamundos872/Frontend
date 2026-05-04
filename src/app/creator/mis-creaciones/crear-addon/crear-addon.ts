@@ -33,40 +33,54 @@ export class CrearAddon implements AfterViewInit {
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
-      console.log('CrearAddon: ngAfterViewInit called in browser');
-      setTimeout(() => {
-        try {
-          if (typeof $ === 'undefined') {
-            console.error('CrearAddon: jQuery ($) is not defined!');
-            this.errorMessage = 'Error interno: jQuery no está cargado.';
-            return;
-          }
-          
-          console.log('CrearAddon: Initializing markdown editor');
-          $('#descripcionTextarea').markdownEditor({
-            preview: true,
-            onPreview: function (content: any, callback: any) {
-              console.log('CrearAddon: onPreview called with content length:', content?.length);
-              try {
-                if (typeof marked === 'undefined') {
-                  console.error('CrearAddon: marked is not defined globally!');
-                  callback('Error: marked no está definido.');
-                  return;
-                }
-                const parsed = marked.parse(content);
-                console.log('CrearAddon: content parsed successfully');
-                callback(parsed);
-              } catch (e) {
-                console.error('CrearAddon: Error parsing markdown in preview:', e);
-                callback('Error al procesar markdown.');
-              }
-            }
-          });
-        } catch (e) {
-          console.error('CrearAddon: Error initializing markdown editor:', e);
-        }
-      }, 100);
+      this.initEditorWithRetries(0);
     }
+  }
+
+  private initEditorWithRetries(retryCount: number) {
+    if (retryCount > 15) {
+      console.error('CrearAddon: Max retries reached for editor initialization');
+      console.log('CrearAddon Diagnostic:', {
+        jQuery_defined: typeof $ !== 'undefined',
+        markdownEditor_defined: typeof $ !== 'undefined' && typeof $.fn.markdownEditor !== 'undefined',
+        marked_defined: typeof marked !== 'undefined',
+        ace_defined: typeof (window as any).ace !== 'undefined'
+      });
+      return;
+    }
+
+    setTimeout(() => {
+      try {
+        const isJQueryOk = typeof $ !== 'undefined';
+        const isPluginOk = isJQueryOk && typeof $.fn.markdownEditor !== 'undefined';
+
+        if (!isPluginOk) {
+          console.log(`CrearAddon: Waiting for dependencies (Retry ${retryCount + 1}). JQuery: ${isJQueryOk}, Plugin: ${isPluginOk}`);
+          this.initEditorWithRetries(retryCount + 1);
+          return;
+        }
+
+        console.log('CrearAddon: Dependencies ready, initializing...');
+        $('#descripcionTextarea').markdownEditor({
+          preview: true,
+          onPreview: function (content: any, callback: any) {
+            try {
+              if (typeof marked === 'undefined') {
+                callback('Error: marked no está definido.');
+                return;
+              }
+              const parsed = marked.parse(content);
+              callback(parsed);
+            } catch (e) {
+              callback('Error al procesar markdown.');
+            }
+          }
+        });
+      } catch (e) {
+        console.error('CrearAddon: Exception during init:', e);
+        this.initEditorWithRetries(retryCount + 1);
+      }
+    }, 500);
   }
 
   onSubmit() {
@@ -74,18 +88,14 @@ export class CrearAddon implements AfterViewInit {
     this.successMessage = '';
 
     if (isPlatformBrowser(this.platformId)) {
-      // Intentar obtener el contenido del editor de markdown si existe
       try {
         const editor = $('#descripcionTextarea').data('markdownEditor');
         if (editor) {
           this.addonData.textoAddon = editor.getContent();
-          console.log('CrearAddon: Content obtained from editor API:', this.addonData.textoAddon?.length);
         } else {
           this.addonData.textoAddon = $('#descripcionTextarea').val();
-          console.log('CrearAddon: Content obtained from textarea val():', this.addonData.textoAddon?.length);
         }
       } catch (e) {
-        console.error('CrearAddon: Error getting content from editor:', e);
         this.addonData.textoAddon = $('#descripcionTextarea').val();
       }
     }
@@ -106,8 +116,8 @@ export class CrearAddon implements AfterViewInit {
       this.errorMessage = "Debes seleccionar un Tag / Categoría.";
       return;
     }
-    if (!this.addonData.descripcion || this.addonData.descripcion.trim().length < 5 || this.addonData.descripcion.length > 1000) {
-      this.errorMessage = "La Descripción es obligatoria y debe tener entre 5 y 1000 caracteres.";
+    if (!this.addonData.descripcion || this.addonData.descripcion.trim().length < 5 || this.addonData.descripcion.length > 2000) {
+      this.errorMessage = "La Descripción es obligatoria y debe tener entre 5 y 2000 caracteres.";
       return;
     }
     if (!this.addonData.textoAddon || this.addonData.textoAddon.trim().length < 5) {

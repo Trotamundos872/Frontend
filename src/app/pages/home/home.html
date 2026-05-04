@@ -1,12 +1,59 @@
+<div class="bd-example-snippet bd-code-snippet">
+  <div class="bd-example m-0 border-0">
+    <div id="carouselExampleCaptions" class="carousel slide custom-carousel" data-bs-ride="carousel"
+      *ngIf="randomAddons.length > 0">
+      <div class="carousel-indicators">
+        <button *ngFor="let addon of randomAddons; let i = index" type="button"
+          data-bs-target="#carouselExampleCaptions" [attr.data-bs-slide-to]="i" [class.active]="i === 0"
+          [attr.aria-label]="'Slide ' + (i + 1)" [attr.aria-current]="i === 0 ? 'true' : null">
+        </button>
+      </div>
+      <div class="carousel-inner">
+        <div *ngFor="let addon of randomAddons; let i = index" class="carousel-item" [class.active]="i === 0">
+          <div class="carousel-image-container">
+            <img [src]="addon.urlMiniatura" class="d-block w-100 carousel-img" [alt]="addon.nombre">
+            <div class="carousel-overlay"></div>
+          </div>
+          <div class="carousel-caption d-none d-md-block">
+            <h2 class="display-5 fw-bold text-white">{{ addon.nombre ?? 'Sin nombre' }}</h2>
+       
+              <a [routerLink]="['/addon', addon.id]" class="btn btn-primary mt-2 px-4 shadow">Descargar</a>
+          
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+
+
+  </div>
+</div>
 <p class="h4">Ultimos Add-Ons</p>
 <hr>
 
 <div class="mb-4 d-flex">
- 
   <input #searchInput type="text" class="form-control me-2" placeholder="Buscar add-on..."
-    (keyup.enter)="onSearch(searchInput.value)">
+    (keyup.enter)="onSearch(searchInput.value, orderSelect.value)">
+
+  <select #orderSelect class="form-select me-2" style="width: auto;"
+    (change)="onSearch(searchInput.value, orderSelect.value)">
+    <option value="normal">Sin Filtro</option>
+    <option value="likes">Más Likes</option>
+    <option value="reciente">Más Reciente</option>
+    <option value="alfabetico">A-Z</option>
+  </select>
+
   <button class="btn btn-primary d-flex align-items-center justify-content-center"
-    (click)="onSearch(searchInput.value)">
+    (click)="onSearch(searchInput.value, orderSelect.value)">
     <img src="magnifying-glass-solid-full.svg" width="16" height="16" style="filter: brightness(0) invert(1);">
   </button>
 </div>
@@ -27,11 +74,10 @@
             <div class="card-body">
               <h5 class="card-title">{{ addonCard.nombre }} </h5>
               <p class="card-text">{{ addonCard.descripcion | slice:0:100 }}{{
-                (addonCard.descripcion?.length
-                ?? 0) > 100 ? '...' : '' }}</p>
+                (addonCard.descripcion?.length ?? 0) > 100 ? '...' : '' }}</p>
               <span class="category-container d-block mt-2">
                 <span *ngFor="let nombre of addonCard.nombresCreadores"
-                  class="badge bg-dark-subtle text-dark-emphasis rounded-pill me-1">
+                  class="badge bg-secondary text-white rounded-pill me-1">
                   Por {{ nombre }}
                 </span>
                 <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">{{addonCard.tipo}}</span>&nbsp;
@@ -54,5 +100,6 @@
   </div>
 
   <p *ngIf="errorLoading">Error al cargar addons. Recarga la página.</p>
-  <p *ngIf="!loading && !valores.length && !errorLoading">No hay addons disponibles.</p>
+  <p *ngIf="!loading && !valores.length && !errorLoading">No hay addons
+    disponibles.</p>
 </ng-template>

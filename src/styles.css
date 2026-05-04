@@ -1,10 +1,34 @@
-/*INTENTAR USAR ANGULAR MATERIAL*/
+
 :root {
-  --color-bg: white;
-  --color-text: #000;
-  --color-dark: rgb(47, 47, 47);
-  --color-border-light: white;
-  --color-border-dark: rgb(47, 47, 47);
+  --color-bg: #ffffff;
+  --color-text: #212529;
+  --color-card-bg: #ffffff;
+  --color-card-border: rgba(0,0,0,.125);
+  --color-muted: #6c757d;
+  --color-border-light: #eaecef;
+  --color-code-bg: rgba(27,31,35,.05);
+  --color-pre-bg: #f6f8fa;
+  --color-hr: #dee2e6;
+  --color-table-border: #dfe2e5;
+  --color-table-stripe: #f6f8fa;
+  --color-header-bg: #212529;
+  --color-header-hover: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] {
+  --color-bg: #000000;
+  --color-text: #ffffff;
+  --color-card-bg: #272727;
+  --color-card-border: #1a1a1a;
+  --color-muted: #999999;
+  --color-border-light: #1a1a1a;
+  --color-code-bg: rgba(255,255,255,.05);
+  --color-pre-bg: #0a0a0a;
+  --color-hr: #1a1a1a;
+  --color-table-border: #1a1a1a;
+  --color-table-stripe: #0a0a0a;
+  --color-header-bg: #000000;
+  --color-header-hover: rgba(255, 255, 255, 0.05);
 }
 
 * {
@@ -18,11 +42,69 @@ body {
   height: auto;
   color: var(--color-text);
   background-color: var(--color-bg);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.p-3 {
+    padding: 0.5rem !important;
+}
+
+[data-theme='dark'] .card {
+  background-color: var(--color-card-bg);
+  border-color: var(--color-card-border);
+  color: var(--color-text);
+}
+
+
+[data-theme='dark'] input,  input:hover,  input:active, select {
+  background-color: var(--color-card-bg);
+  border-color: var(--color-card-border);
+  color: var(--color-text);
+}
+
+[data-theme='dark'] .text-muted, [data-theme='dark'] .text-secondary {
+  color: var(--color-muted) !important;
+}
+
+[data-theme='dark'] .table {
+  color: var(--color-text);
+  border-color: var(--color-table-border);
+}
+
+[data-theme='dark'] .table-striped>tbody>tr:nth-of-type(odd)>* {
+  background-color: var(--color-table-stripe);
+  color: var(--color-text);
+}
+
+[data-theme='dark'] hr {
+  border-color: var(--color-hr);
+  opacity: 0.2;
+}
+
+[data-theme='dark'] .modal-content {
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+  border-color: var(--color-card-border);
+}
+
+[data-theme='dark'] .modal-header, [data-theme='dark'] .modal-footer {
+  border-color: var(--color-card-border);
+}
+
+[data-theme='dark'] .list-group-item {
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+  border-color: var(--color-card-border);
+}
+
+[data-theme='dark'] .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 main {
   margin: auto;
   margin-top: 20px;
+  min-height: 100vh;
   max-width: 1050px;
   padding: 10px;
 }
@@ -55,8 +137,11 @@ p {
 
 header input::placeholder {
   color: #5a5a5a !important;
+  
 }
-
+header  {
+      box-shadow: -1px 8px 20px 20px #0000001f;
+}
 
 footer i {
   margin: 0px 5px;
@@ -64,6 +149,11 @@ footer i {
 
 .card-ancore {
   text-decoration: none;
+}
+
+.card-img-top {
+  height: 140px;
+  object-fit: cover;
 }
 
 
@@ -76,6 +166,9 @@ footer i {
   vertical-align: middle;
   margin: 0 8px;
   border-radius: 5px;
+}
+.dark {
+  background-color: #dee2e6;
 }
 
 .btn_menu_mark {
@@ -174,4 +267,80 @@ footer i {
 
 .markdown-content table tr:nth-child(2n) {
   background-color: #f6f8fa;
+}
+
+/* Overrides para Modo Negro (Dark Theme) */
+[data-theme='dark'] .markdown-content {
+  color: var(--color-text);
+}
+
+[data-theme='dark'] .markdown-content h1, 
+[data-theme='dark'] .markdown-content h2, 
+[data-theme='dark'] .markdown-content h3 {
+  color: var(--color-text);
+  border-bottom-color: var(--color-border-light);
+}
+
+[data-theme='dark'] .markdown-content code {
+  background-color: var(--color-code-bg);
+  color: var(--color-text);
+}
+
+[data-theme='dark'] .markdown-content pre {
+  background-color: var(--color-pre-bg);
+}
+
+[data-theme='dark'] .markdown-content blockquote {
+  color: var(--color-muted);
+  border-left-color: var(--color-border-light);
+}
+
+[data-theme='dark'] .markdown-content table th, 
+[data-theme='dark'] .markdown-content table td {
+  border-color: var(--color-table-border);
+}
+
+[data-theme='dark'] .markdown-content table tr {
+  background-color: var(--color-card-bg);
+  border-top-color: var(--color-table-border);
+}
+
+[data-theme='dark'] .markdown-content table tr:nth-child(2n) {
+  background-color: var(--color-table-stripe);
+}
+
+
+[data-theme='dark'] .texto-footer {
+  color: #fff !important;
+}
+
+[data-theme='dark'] .texto-footer img, [data-theme='dark'] .like-heart {
+  filter: invert(1) !important;
+}
+
+
+[data-theme='dark'] td,[data-theme='dark'] th,[data-theme='dark'] .accordion-body  {
+  background-color: var(--color-card-bg) !important;
+  color: #fff !important;
+}
+
+[data-theme='dark'] td img {
+  filter: invert(1) !important;
+}
+[data-theme='dark'] td {
+  border-bottom-width:#fff !important;
+}
+
+
+
+.card-ancore .card {
+    transition: transform 0.2s;
+    cursor: pointer;
+    height: 100%;
+}
+
+
+.card-ancore .card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }

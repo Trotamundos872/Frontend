@@ -1,0 +1,86 @@
+<div class="col-md-12">
+  <div class="card mb-4 shadow-sm" id="uploadCard">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Subir Nuevo Archivo</h5>
+      <span class="badge bg-secondary">ID Addon: {{idAddon}}</span>
+    </div>
+    <div class="card-body">
+      <div *ngIf="errorMessage" class="alert alert-danger mb-3" role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <div *ngIf="successMessage" class="alert alert-success mb-3" role="alert">
+        {{ successMessage }}
+      </div>
+
+      <form (ngSubmit)="onSubmit()">
+        
+        <div class="mb-4">
+          <label class="form-label">Archivo del Proyecto:</label>
+          <div 
+            class="upload-drag-area d-flex flex-column align-items-center justify-content-center p-5 border border-2 border-dashed rounded"
+            [class.dragging]="isDragging"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+            (click)="fileInput.click()"
+          >
+            <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-muted"></i>
+            <p class="mb-1" *ngIf="!selectedFileName">Arrastra tu archivo aquí o haz clic para seleccionar</p>
+            <p class="mb-1 text-primary fw-bold" *ngIf="selectedFileName">{{ selectedFileName }}</p>
+            <small class="text-muted">Soporta .zip, .mcaddon, .mcpack, .mctemplate</small>
+            <input type="file" #fileInput class="d-none" (change)="onFileSelected($event)">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="tipo" class="form-label">Tipo de Archivo:</label>
+            <select class="form-select" id="tipo" name="tipo" [(ngModel)]="archivoData.tipo" required>
+              <option value="" disabled selected>Selecciona el tipo...</option>
+              <option value="addon">Add-On</option>
+              <option value="mapa">Mapa</option>
+              <option value="skin">Skin</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="nombreMostrado" class="form-label">Nombre para mostrar:</label>
+            <input type="text" class="form-control" id="nombreMostrado" name="nombreMostrado"
+              [(ngModel)]="archivoData.nombreMostrado" placeholder="Ej: Versión 1.0 Estable" required>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="versionJuego" class="form-label">Versión del Juego:</label>
+            <input type="text" class="form-control" id="versionJuego" name="versionJuego"
+              [(ngModel)]="archivoData.versionJuego" placeholder="Ej: 1.20.x" required>
+          </div>
+          <div class="col-md-6">
+            <label for="versionAddon" class="form-label">Versión del Addon:</label>
+            <input type="text" class="form-control" id="versionAddon" name="versionAddon"
+              [(ngModel)]="archivoData.versionAddon" placeholder="Ej: 1.0.0" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="registroCambios" class="form-label">Registro de Cambios (Opcional):</label>
+          <textarea class="form-control" id="registroCambios" name="registroCambios" rows="4"
+            [(ngModel)]="archivoData.registroCambios" placeholder="Describe las novedades de esta versión..."></textarea>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-dark px-4" [disabled]="loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ loading ? 'Subiendo...' : 'Subir Archivo' }}
+          </button>
+          <button type="button" class="btn btn-outline-secondary px-4" [routerLink]="['/mi-perfil']" [disabled]="loading">Cancelar</button>
+        </div>
+        
+        <div class="form-text mt-3">
+          Los archivos serán revisados por un administrador antes de ser públicos.
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

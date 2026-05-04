@@ -1,0 +1,24 @@
+<div class="inbox-container p-3">
+    <div *ngIf="loading" class="text-center py-3">
+        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+    </div>
+
+    <div *ngIf="!loading && subscritos.length === 0" class="text-muted text-center py-2 small">
+        No estás suscrito a ningún creador todavía.
+    </div>
+
+    <div class="list-group list-group-flush" *ngIf="!loading && subscritos.length > 0">
+        <div class="text-muted small mb-2 px-2">Creadores seguidos:</div>
+        <a *ngFor="let creador of subscritos" 
+           [routerLink]="['/perfil', creador.id]" 
+           class="list-group-item list-group-item-action border-0 rounded d-flex align-items-center py-2 mb-1">
+            <div class="creador-avatar me-2 rounded-circle bg-light d-flex align-items-center justify-content-center p-1 border">
+                <img src="user-solid-full.svg" width="20" height="20" class="opacity-75">
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+                <div class="me-3 d-inline-flex align-items-center">{{ creador.nombre }}</div>
+                <div class="text-truncate text-muted smaller">{{ creador.especialidad }}</div>
+            </div>
+        </a>
+    </div>
+</div>

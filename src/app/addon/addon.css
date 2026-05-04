@@ -2,19 +2,37 @@
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  height: 233px !important;
+  min-height: 233px !important;
+  height: auto !important;
+  max-height: 233px !important;
   overflow: hidden !important;
   border: var(--bs-list-group-border-width, 1px) solid var(--bs-list-group-border-color, #dee2e6) !important;
   border-radius: 12px !important;
-  margin-bottom: 15px !important;
+  margin-bottom: 0 !important;
   padding: 0 !important;
 }
 
 .thumbnail-container img {
   width: 100% !important;
-  height: auto !important;
-  object-fit: cover !important;
-  object-position: center !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  background-color: #f8f9fa;
+}
+
+.info-card {
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .thumbnail-container {
+    min-height: 180px !important;
+    max-height: 300px !important;
+  }
+  
+  .h4 {
+    font-size: 1.25rem;
+    text-align: center;
+  }
 }
 
 .creator-pill-link {
@@ -25,4 +43,23 @@
 .creator-pill-link:hover {
   background-color: var(--bs-dark) !important;
   color: var(--bs-white) !important;
+}
+
+.like-container {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+}
+
+
+.like-container.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.like-heart {
+  width: 24px;
+  height: 24px;
+
 }

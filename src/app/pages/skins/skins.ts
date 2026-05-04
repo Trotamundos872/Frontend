@@ -8,13 +8,13 @@ import { of, Subscription, Subject } from 'rxjs';
 import { catchError, retry, timeout, takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-addons',
+  selector: 'app-skins',
   standalone: true,
   imports: [CommonModule, NgbModule, RouterModule],
-  templateUrl: './addons.html',
-  styleUrls: ['./addons.css'],
+  templateUrl: './skins.html',
+  styleUrls: ['./skins.css'],
 })
-export class Addons implements OnInit, OnDestroy {
+export class Skins implements OnInit, OnDestroy {
   valores: Addon[] = [];
   loading = true;
   errorLoading = false;
@@ -26,7 +26,7 @@ export class Addons implements OnInit, OnDestroy {
   constructor(private addonsService: AddonsService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    // Pre-llamada filtrando por "Addon"
+    // Pre-llamada
     this.loadAddons('', 'normal');
   }
 
@@ -51,13 +51,13 @@ export class Addons implements OnInit, OnDestroy {
       this.searchSubscription.unsubscribe();
     }
 
-    // Enviamos siempre la categoría 'Addon'
-    this.searchSubscription = this.addonsService.getAll(termino, orden, 'Addon').pipe(
-      timeout(8000), // Si el servidor tarda más de 8s, lanza error y quita el Cargando...
+    // Enviamos siempre la categoría 'Skin'
+    this.searchSubscription = this.addonsService.getAll(termino, orden, 'Skin').pipe(
+      timeout(8000),
       retry({ count: 1, delay: 1000 }),
       takeUntil(this.destroy$),
       catchError(err => {
-        console.error('No se pudo obtener addons', err);
+        console.error('Error fetching skins:', err);
         this.errorLoading = true;
         this.loading = false;
         this.cdr.detectChanges();
@@ -75,13 +75,5 @@ export class Addons implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       }
     });
-
-    // Seguridad: Si después de 10 segundos sigue cargando, forzar fin de carga
-    setTimeout(() => {
-      if (this.loading) {
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    }, 10000);
   }
 }

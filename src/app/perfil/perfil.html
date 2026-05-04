@@ -1,7 +1,55 @@
-<div class="perfil-container" *ngIf="info">
-  <h1>Perfil de {{ info.nombre }}</h1>
-  <p><strong>Nombre:</strong> {{ info.nombre }}</p>
-  <p><strong>Especialidad:</strong> {{ info.especialidad }}</p>
+<div class="perfil-container container mt-4" *ngIf="info">
+  <div class="row align-items-center mb-4">
+    <div class="col-auto">
+      <img src="user-solid-full.svg" width="100" height="100" class="rounded-circle bg-light p-2">
+    </div>
+    <div class="col">
+      <h1 class="mb-0">{{ info.nombre }}</h1>
+      <p class="text-muted mb-0">{{ info.especialidad }}</p>
+    </div>
+    <div class="col-auto">
+      <button class="btn" [ngClass]="subscrito ? 'btn-outline-danger' : 'btn-warning'" (click)="toggleSub()"
+        [disabled]="subLoading">
+        <span *ngIf="subLoading" class="spinner-border spinner-border-sm me-1"></span>
+        {{ subscrito ? 'Anular Suscripción' : 'Suscribirse' }}
+      </button>
+    </div>
+  </div>
+
+  <hr>
+
+
+  <div class="text-center my-5" *ngIf="loadingAddons">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando creaciones...</span>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!loadingAddons">
+    <div *ngIf="addons.length === 0" class="col-12">
+      <div class="alert alert-info">
+        Este creador aún no tiene creaciones públicas.
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-4 mb-4" *ngFor="let addon of addons">
+      <a class="card-ancore" [routerLink]="['/addon', addon.id]">
+        <div class="card h-100 shadow-sm">
+          <img [src]="addon.urlMiniatura" class="card-img-top" alt="Imagen de {{ addon.nombre }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ addon.nombre }}</h5>
+            <p class="card-text text-muted">
+              {{ addon.descripcion | slice:0:100 }}{{ (addon.descripcion?.length ?? 0) > 100 ? '...' : '' }}
+            </p>
+            <div class="mt-auto">
+              <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill me-1">{{addon.tipo}}</span>
+              <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">{{addon.tag}}</span>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
 </div>
 
 <div class="spinner-carga" *ngIf="loading">

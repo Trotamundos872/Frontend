@@ -16,8 +16,11 @@ export class Addons {
 
   constructor(private http: HttpClient) { }
 
-  public getAll(termino: string = ''): Observable<Addon[]> {
-    const url = termino.trim() ? `${this.baseUrl}/buscar?buscar=${termino}` : this.baseUrl;
+  public getAll(termino: string = '', orden: string = 'normal', categoria: string = ''): Observable<Addon[]> {
+    let url = `${this.baseUrl}/buscar?buscar=${termino}&orden=${orden}`;
+    if (categoria) {
+      url += `&categoria=${categoria}`;
+    }
     return this.http.get<Addon[]>(url).pipe(
       timeout(5000),
       catchError(err => {
@@ -78,6 +81,16 @@ export class Addons {
     );
   }
 
+  public getAddonsDeCreador(id: string): Observable<Addon[]> {
+    return this.http.get<Addon[]>(`${this.baseUrl}/perfil/${id}`).pipe(
+      timeout(5000),
+      catchError(err => {
+        console.error('Error fetching addons de creador:', err);
+        return of([]);
+      })
+    );
+  }
+
   public createAddon(addon: Addon): Observable<any> {
     let token = '';
     if (isPlatformBrowser(this.platformId)) {
@@ -87,6 +100,106 @@ export class Addons {
       headers: { 'Authorization': 'Bearer ' + token }
     }).pipe(
       timeout(10000)
+    );
+  }
+
+  public darLike(addonId: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.post<any>(`${this.baseUrl}/darlike/${addonId}`, {}, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).pipe(
+      timeout(5000)
+    );
+  }
+
+  public subirArchivo(archivoData: any): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    
+    const idAddon = archivoData.addon.id;
+    
+    return this.http.post<any>(`http://localhost:8080/api/archivos/subir?idAddon=${idAddon}`, archivoData, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).pipe(
+      timeout(10000)
+    );
+  }
+
+  public subirArchivoReal(file: File, nombreDestino: string): Observable<any> {
+    const formData = new FormData();
+    // El PHP espera el campo 'archivo'
+    // Usamos un nuevo File para renombrarlo antes de enviarlo
+    const renamedFile = new File([file], nombreDestino, { type: file.type });
+    formData.append('archivo', renamedFile);
+
+    return this.http.post<any>('https://www.trmc-addons.com/tfg-media/subir.php', formData).pipe(
+      timeout(30000) // 30 segundos para archivos grandes
+    );
+  }
+
+  public getArchivosByAddon(idAddon: string | number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8080/api/archivos/addon/${idAddon}`).pipe(
+      timeout(5000),
+      catchError(err => {
+        console.error('Error fetching archivos:', err);
+        return of([]);
+      })
+    );
+  }
+
+  public comprobarLike(addonId: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.get<any>(`${this.baseUrl}/darlike/comprobar/${addonId}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).pipe(
+      timeout(5000),
+      catchError(err => of({ haDadoLike: false }))
+    );
+  }
+
+  // SUSCRIPCIONES
+  public toggleSubscripcion(idCreador: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.post<any>(`http://localhost:8080/api/subscripcion/susbscribe/${idCreador}`, {}, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+  }
+
+  public getEstadoSubscripcion(idCreador: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.get<any>(`http://localhost:8080/api/subscripcion/estado/${idCreador}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).pipe(
+      catchError(() => of({ subscrito: false }))
+    );
+  }
+
+  public getDetallesSubscritos(): Observable<any[]> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.get<any[]>(`http://localhost:8080/api/subscripcion/detalles-subscritos`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).pipe(
+      catchError(err => {
+        console.error('Error al obtener suscritos:', err);
+        return of([]);
+      })
     );
   }
 }

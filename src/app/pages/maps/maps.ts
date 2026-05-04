@@ -1,36 +1,33 @@
 import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { Addons } from "../../services/addons";
+import { Addons as AddonsService } from "../../services/addons";
 import { Addon } from "../../models/addon.model"
 import { RouterModule } from '@angular/router';
 import { of, Subscription, Subject } from 'rxjs';
 import { catchError, retry, timeout, takeUntil, tap } from 'rxjs/operators';
 
-//Nota, hacer que home cargue todos, pero addons solo los del tipo addons
-
 @Component({
-  selector: 'app-home',
+  selector: 'app-maps',
   standalone: true,
   imports: [CommonModule, NgbModule, RouterModule],
-  templateUrl: './home.html',
-  styleUrls: ['./home.css'],
+  templateUrl: './maps.html',
+  styleUrls: ['./maps.css'],
 })
-export class Home implements OnInit, OnDestroy {
+export class Maps implements OnInit, OnDestroy {
   valores: Addon[] = [];
   loading = true;
   errorLoading = false;
   searchTerm = '';
   selectedOrder = 'normal';
-  randomAddons: Addon[] = [];
   private searchSubscription?: Subscription;
   private destroy$ = new Subject<void>();
 
-  constructor(private addons: Addons, private cdr: ChangeDetectorRef) { }
+  constructor(private addonsService: AddonsService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    console.log('Home: ngOnInit called');
-    this.loadAddons();
+    // Pre-llamada
+    this.loadAddons('', 'normal');
   }
 
   ngOnDestroy(): void {
@@ -47,7 +44,6 @@ export class Home implements OnInit, OnDestroy {
   }
 
   loadAddons(termino: string = '', orden: string = 'normal'): void {
-    console.log('Home: loadAddons called with term:', termino, 'order:', orden);
     this.loading = true;
     this.errorLoading = false;
 
@@ -55,13 +51,13 @@ export class Home implements OnInit, OnDestroy {
       this.searchSubscription.unsubscribe();
     }
 
-    // Petición al servicio (Home carga todo, por eso categoria '')
-    this.searchSubscription = this.addons.getAll(termino, orden, '').pipe(
-      tap(data => console.log('Home: Data received from service:', data?.length || 0, 'items')),
+    // Enviamos siempre la categoría 'mapa'
+    this.searchSubscription = this.addonsService.getAll(termino, orden, 'mapa').pipe(
+      timeout(8000),
       retry({ count: 1, delay: 1000 }),
       takeUntil(this.destroy$),
       catchError(err => {
-        console.error('Home: Error fetching addons:', err);
+        console.error('Error fetching maps:', err);
         this.errorLoading = true;
         this.loading = false;
         this.cdr.detectChanges();
@@ -69,38 +65,15 @@ export class Home implements OnInit, OnDestroy {
       })
     ).subscribe({
       next: data => {
-        console.log('Home: Updating values and setting loading to false');
         this.valores = data ?? [];
-        this.selectRandomAddons();
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Home: Subscription error:', err);
+      error: () => {
         this.loading = false;
         this.errorLoading = true;
         this.cdr.detectChanges();
       }
     });
-
-    // Seguridad: Si después de 10 segundos sigue cargando, forzar fin de carga
-    setTimeout(() => {
-      if (this.loading) {
-        console.warn('Home: Loading timeout reached, forcing loading = false');
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    }, 10000);
-  }
-
-  private selectRandomAddons(): void {
-    if (this.valores.length === 0) {
-      this.randomAddons = [];
-      return;
-    }
-    // Clonar y barajar
-    const shuffled = [...this.valores].sort(() => 0.5 - Math.random());
-    // Tomar los primeros 3
-    this.randomAddons = shuffled.slice(0, 3);
   }
 }
