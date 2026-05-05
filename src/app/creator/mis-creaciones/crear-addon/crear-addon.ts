@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Addons } from '../../../services/addons';
+import { ADDON_TYPES, ADDON_TAGS } from '../../../models/addon.model';
 
 declare var $: any;
 declare var marked: any;
@@ -15,6 +16,8 @@ declare var marked: any;
   styleUrl: './crear-addon.css'
 })
 export class CrearAddon implements AfterViewInit {
+  addonTypes = ADDON_TYPES;
+  addonTags = ADDON_TAGS;
   addonData: any = {
     nombre: '',
     urlMiniatura: '',

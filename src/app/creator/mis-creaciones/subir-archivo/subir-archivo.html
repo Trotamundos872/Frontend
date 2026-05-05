@@ -35,23 +35,6 @@
 
         <div class="row mb-3">
           <div class="col-md-6">
-            <label for="tipo" class="form-label">Tipo de Archivo:</label>
-            <select class="form-select" id="tipo" name="tipo" [(ngModel)]="archivoData.tipo" required>
-              <option value="" disabled selected>Selecciona el tipo...</option>
-              <option value="addon">Add-On</option>
-              <option value="mapa">Mapa</option>
-              <option value="skin">Skin</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="nombreMostrado" class="form-label">Nombre para mostrar:</label>
-            <input type="text" class="form-control" id="nombreMostrado" name="nombreMostrado"
-              [(ngModel)]="archivoData.nombreMostrado" placeholder="Ej: Versión 1.0 Estable" required>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
             <label for="versionJuego" class="form-label">Versión del Juego:</label>
             <input type="text" class="form-control" id="versionJuego" name="versionJuego"
               [(ngModel)]="archivoData.versionJuego" placeholder="Ej: 1.20.x" required>

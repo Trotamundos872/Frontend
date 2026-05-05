@@ -12,3 +12,6 @@ c:; cd 'c:\Users\Marcos y Ezequiel\Desktop\TFG'; & 'C:\Program Files\Java\jdk-23
 cd "c:\Users\Marcos y Ezequiel\Desktop\TFG\Frontend"
 npx.cmd ng serve --port 4200
 c:; cd 'c:\Users\Marcos y Ezequiel\Desktop\TFG'; & 'C:\Program Files\Java\jdk-23\bin\java.exe' '@C:\Users\MARCOS~1\AppData\Local\Temp\cp_7bqs1abfvarkhidz1cgumqbkl.argfile' 'com.example.demo.DemoApplication'
+
+
+sudo docker compose up --build

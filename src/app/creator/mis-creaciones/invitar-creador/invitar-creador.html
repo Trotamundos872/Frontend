@@ -1,0 +1,53 @@
+<div class="col-md-12">
+  <div class="card mb-4 shadow-sm" id="registerCard">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Invitar Creador al Proyecto</h5>
+      <button class="btn btn-sm btn-outline-dark" [routerLink]="['/creator/mis-creaciones']">Volver</button>
+    </div>
+    
+    <div class="card-body">
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Buscando creadores disponibles...</p>
+      </div>
+
+      <div *ngIf="!loading">
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3 d-flex align-items-center" role="alert">
+          <div>{{ errorMessage }}</div>
+        </div>
+
+        <div *ngIf="successMessage" class="alert alert-success mt-3 d-flex align-items-center" role="alert">
+          <div>{{ successMessage }}</div>
+        </div>
+
+        <div class="table-responsive mt-3">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Nombre del Creador</th>
+                <th class="text-end">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let creador of creadores">
+                <td>
+                  <strong>{{ creador.usuario?.nombre }}</strong>
+                </td>
+                <td class="text-end">
+                  <button class="btn btn-dark btn-sm" (click)="invitar(creador.id)">
+                    Invitar al Proyecto
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="creadores.length === 0">
+                <td colspan="2" class="text-center py-4 text-muted">
+                  No se encontraron otros creadores disponibles.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

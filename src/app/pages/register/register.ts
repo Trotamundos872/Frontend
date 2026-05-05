@@ -19,6 +19,13 @@ export class Register {
 
   registerStatus = '';
   registerStatusClass = '';
+  
+  //Inicio en formulario base
+  // Si TODO BIEN -> step = 2;
+  step = 1; 
+  verificationCode = '';
+  userCode = '';
+  
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
 
@@ -52,12 +59,49 @@ export class Register {
       this.cdr.detectChanges();
       return;
     }
+    // Generar código de 6 dígitos
+    this.verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    const emailBody = {
+      email: this.email,
+      subject: "Código de Verificación - Add-Ons MCender",
+      message: `Hola ${this.nombre},\n\nTu código de verificación es: ${this.verificationCode}\n\nIntroduce este código en la web para completar tu registro.`
+    };
 
+
+    //Uso endpoint privado de mi web en produccion
+    this.http.post('https://www.trmc-addons.com/tfg-media/mail.php', emailBody).subscribe({
+      next: (res: any) => {
+        this.loading = false;
+        this.step = 2;
+        this.registerStatus = "";
+        this.registerStatusClass = "";
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error enviando correo:', err);
+        this.registerStatus = "Error al enviar el correo de verificación. Inténtalo de nuevo.";
+        this.registerStatusClass = "alert-danger";
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  confirmarCodigo() {
+    if (this.userCode !== this.verificationCode) {
+      this.registerStatus = "El código introducido es incorrecto.";
+      this.registerStatusClass = "alert-danger";
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.loading = true;
+    this.registerStatus = "Código correcto, finalizando registro...";
     this.registerStatusClass = "alert-info";
+    this.cdr.detectChanges();
 
     const baseUrl = "http://localhost:8080/api/usuario";
-
-
     const body = {
       nombre: this.nombre,
       email: this.email,
@@ -65,12 +109,10 @@ export class Register {
       esDePago: false
     };
 
-
     this.http.post(baseUrl, body).subscribe({
       next: (res: any) => {
         this.loading = false;
-        this.registerStatus = "Exito, Bienvenido, pulse Accede";
-        //Abrir Modal
+        this.registerStatus = "Éxito, Bienvenido, pulse Accede";
         this.registerStatusClass = "alert-success";
         this.cdr.detectChanges(); 
       },

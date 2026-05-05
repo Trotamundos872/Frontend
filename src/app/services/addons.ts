@@ -188,6 +188,16 @@ export class Addons {
     );
   }
 
+  public updateAddon(id: number, addonData: any): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.put<any>(`${this.baseUrl}/${id}`, addonData, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+  }
+
   public getDetallesSubscritos(): Observable<any[]> {
     let token = '';
     if (isPlatformBrowser(this.platformId)) {
@@ -201,5 +211,62 @@ export class Addons {
         return of([]);
       })
     );
+  }
+
+  public registrarDescarga(idArchivo: number): Observable<any> {
+    return this.http.post<any>(`http://localhost:8080/api/archivos/descargar/${idArchivo}`, {});
+  }
+
+  public getAllCreadores(): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8080/api/creador/todos`).pipe(
+      catchError(err => {
+        console.error('Error al obtener todos los creadores:', err);
+        return of([]);
+      })
+    );
+  }
+
+  public invitarCreador(idAddon: number, idCreador: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.get<any>(`http://localhost:8080/api/addon/invitar/enviar/${idAddon}/${idCreador}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+  }
+
+  public getRanking(): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8080/api/creador/ranking`);
+  }
+
+  public getInvitacionesPendientes(): Observable<any[]> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.get<any[]>(`http://localhost:8080/api/addon/mis-invitaciones`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+  }
+
+  public aceptarInvitacion(idAddon: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.get<any>(`http://localhost:8080/api/addon/invitar/aceptar/${idAddon}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+  }
+
+  public rechazarInvitacion(idAddon: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.get<any>(`http://localhost:8080/api/addon/invitar/rechazar/${idAddon}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
   }
 }

@@ -55,11 +55,38 @@ body {
   color: var(--color-text);
 }
 
+/* Inputs y Selects en Modo Oscuro */
+[data-theme='dark'] .form-control,
+[data-theme='dark'] .form-select,
+[data-theme='dark'] input,
+[data-theme='dark'] select,
+[data-theme='dark'] textarea {
+  background-color: #1a1a1a !important;
+  border-color: #333 !important;
+  color: #ffffff !important;
+}
 
-[data-theme='dark'] input,  input:hover,  input:active, select {
-  background-color: var(--color-card-bg);
-  border-color: var(--color-card-border);
-  color: var(--color-text);
+[data-theme='dark'] .form-control:focus,
+[data-theme='dark'] .form-select:focus,
+[data-theme='dark'] input:focus,
+[data-theme='dark'] select:focus,
+[data-theme='dark'] textarea:focus {
+  background-color: #222 !important;
+  border-color: #444 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme='dark'] .form-control::placeholder {
+  color: #777 !important;
+}
+
+[data-theme='dark'] .topbar {
+  background-color: #272727 !important;
+}
+
+[data-theme='dark'] .form-text {
+  color: #999 !important;
 }
 
 [data-theme='dark'] .text-muted, [data-theme='dark'] .text-secondary {
@@ -274,6 +301,10 @@ footer i {
   color: var(--color-text);
 }
 
+[data-theme='dark'] .text-gray-dark {
+  color: #fff;
+}
+
 [data-theme='dark'] .markdown-content h1, 
 [data-theme='dark'] .markdown-content h2, 
 [data-theme='dark'] .markdown-content h3 {
@@ -343,4 +374,11 @@ footer i {
 .card-ancore .card:hover {
     transform: scale(1.02);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.markdown-content img {
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+  display: flex
 }

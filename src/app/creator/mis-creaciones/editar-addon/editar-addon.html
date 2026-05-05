@@ -1,10 +1,16 @@
 <div class="col-md-12 ">
   <div class="card mb-4 shadow-sm" id="registerCard">
     <div class="card-header d-flex justify-content-between align-items-center">
-      <h5 class="mb-0">Crear Nueva Proyecto</h5>
+      <h5 class="mb-0">Editar Proyecto: {{addonData.nombre}}</h5>
+      <button class="btn btn-sm btn-outline-dark" [routerLink]="['/creator/mis-creaciones']">Volver</button>
     </div>
     <div class="card-body">
-      <form (ngSubmit)="onSubmit()">
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Cargando datos del proyecto...</p>
+      </div>
+
+      <form *ngIf="!loading" (ngSubmit)="onSubmit()">
         <div class="mb-3">
           <label for="nombreProyectoInput" class="form-label">Nombre del Proyecto:</label>
           <div class="input-group">
@@ -55,14 +61,10 @@
 
         <div class="mb-3">
           <div class="input-group">
-            <textarea class="form-control" id="descripcionTextarea" aria-label="With textarea"></textarea>
+            <textarea class="form-control" id="descripcionTextarea" name="textoAddon" [(ngModel)]="addonData.textoAddon"></textarea>
           </div>
-          <div id="descripcionTextareaHelp" class="form-text">Descripción Detallada del proyecto (minimo 5 caracteres)
+          <div id="descripcionTextareaHelp" class="form-text">Descripción Detallada del proyecto (mínimo 5 caracteres)
           </div>
-        </div>
-
-        <div class="d-grid mt-4">
-
         </div>
 
         <div *ngIf="errorMessage" class="alert alert-danger mt-3 d-flex align-items-center" role="alert">
@@ -72,9 +74,14 @@
         <div *ngIf="successMessage" class="alert alert-success mt-3 d-flex align-items-center" role="alert">
           <div>{{ successMessage }}</div>
         </div>
-        <button type="submit" class="btn btn-dark">Publicar</button>
-        <div id="descripcionHelp" class="form-text">Al publicar tu proyecto, aceptas los términos y condiciones. Luego
-          subirar los archivos del proyecto.</div>
+        
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-dark" [disabled]="saving">
+            <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+            Guardar Cambios
+          </button>
+          <button type="button" class="btn btn-outline-secondary" [routerLink]="['/creator/mis-creaciones']">Cancelar</button>
+        </div>
       </form>
     </div>
   </div>

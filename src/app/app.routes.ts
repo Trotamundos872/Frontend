@@ -10,14 +10,15 @@ import { Maps } from './pages/maps/maps';
 import { Skins } from './pages/skins/skins';
 import { Ranking } from './pages/ranking/ranking';
 
-import { Home as CreatorHome } from './creator/home/home';
 import { Creator } from './creator/creator';
 import { MisCreaciones } from './creator/mis-creaciones/mis-creaciones';
 import { CrearAddon } from './creator/mis-creaciones/crear-addon/crear-addon';
 import { SubirArchivo } from './creator/mis-creaciones/subir-archivo/subir-archivo';
+import { EditarAddon } from './creator/mis-creaciones/editar-addon/editar-addon';
 import { MisPublicaciones } from './creator/mis-publicaciones/mis-publicaciones';
 import { Estadisticas } from './creator/estadisticas/estadisticas';
 import { MiPerfil } from './creator/mi-perfil/mi-perfil';
+import { InvitarCreador } from './creator/mis-creaciones/invitar-creador/invitar-creador';
 
 export const routes: Routes = [
     { path: '', component: Home },
@@ -34,14 +35,15 @@ export const routes: Routes = [
         path: 'creator', 
         component: Creator,
         children: [
-            { path: 'home', component: CreatorHome },
             { path: 'mis-creaciones', component: MisCreaciones },
             { path: 'mis-creaciones/crear-addon', component: CrearAddon },
+            { path: 'mis-creaciones/editar-addon/:id', component: EditarAddon },
+            { path: 'mis-creaciones/invitar-creador/:id', component: InvitarCreador },
             { path: 'mis-creaciones/subir-archivo/:idaddon', component: SubirArchivo },
             { path: 'mis-publicaciones', component: MisPublicaciones },
             { path: 'estadisticas', component: Estadisticas },
             { path: 'mi-perfil', component: MiPerfil },
-            { path: '', redirectTo: 'home', pathMatch: 'full' }
+            { path: '', redirectTo: 'mis-creaciones', pathMatch: 'full' }
         ]
     },
     { path: '**', redirectTo: '' },

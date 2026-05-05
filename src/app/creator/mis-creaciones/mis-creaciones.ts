@@ -27,12 +27,31 @@ export class MisCreaciones implements OnInit {
   cdr = inject(ChangeDetectorRef);
 
   valores: AddonData[] = [];
+  invitaciones: AddonData[] = [];
   loading = true;
 
   ngOnInit() {
+    this.cargarDatos();
+  }
+
+  cargarDatos() {
+    this.loading = true;
     this.addonsService.getMisCreaciones().subscribe({
       next: (res) => {
         this.valores = res;
+        this.cargarInvitaciones();
+      },
+      error: () => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  cargarInvitaciones() {
+    this.addonsService.getInvitacionesPendientes().subscribe({
+      next: (res) => {
+        this.invitaciones = res;
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -40,6 +59,18 @@ export class MisCreaciones implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
       }
+    });
+  }
+
+  aceptar(id: number) {
+    this.addonsService.aceptarInvitacion(id).subscribe(() => {
+      this.cargarDatos();
+    });
+  }
+
+  rechazar(id: number) {
+    this.addonsService.rechazarInvitacion(id).subscribe(() => {
+      this.cargarDatos();
     });
   }
 }

@@ -106,6 +106,20 @@ export class Addon implements OnInit {
     });
   }
 
+  onDownload(archivoId: number) {
+    this.addonsService.registrarDescarga(archivoId).subscribe({
+      next: () => {
+        // Incrementamos localmente para feedback inmediato si fuera necesario
+        const archivo = this.archivos.find(a => a.id === archivoId);
+        if (archivo) {
+          archivo.numeroDescargas = (archivo.numeroDescargas || 0) + 1;
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al registrar descarga:', err)
+    });
+  }
+
   cargarArchivos(addonId: number) {
     this.addonsService.getArchivosByAddon(addonId).subscribe({
       next: (data) => {

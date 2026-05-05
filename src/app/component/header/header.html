@@ -51,7 +51,7 @@
                     <span *ngIf="isCreator" class="mark-divisor"></span>
 
                     <button *ngIf="isCreator" type="button" class="btn btn-link ms-2 p-0 btn_menu_mark"
-                        routerLink="/creator/home">
+                        routerLink="/creator/mis-creaciones">
                         <img src="helmet-safety-solid-full.svg" width="30" height="30">
                     </button>
                 </ng-container>
@@ -59,3 +59,16 @@
         </div>
     </div>
 </header>
+
+<!-- Sidebar de Creador -->
+<div *ngIf="isCreator" class="creator-sidebar-fixed d-none d-lg-flex flex-column gap-3">
+    <a [routerLink]="['/creator/mis-creaciones']" class="sidebar-btn shadow" title="Mis Creaciones">
+        <img src="plus-solid-full.svg" width="20" height="20">
+    </a>
+    <a [routerLink]="['/creator/estadisticas']" class="sidebar-btn shadow" title="Estadísticas">
+        <img src="chart-line-solid-full.svg" width="20" height="20">
+    </a>
+    <a *ngIf="userId" [routerLink]="['/perfil', userId]" class="sidebar-btn shadow" title="Mi Perfil Público">
+        <img src="user-solid-full.svg" width="20" height="20">
+    </a>
+</div>

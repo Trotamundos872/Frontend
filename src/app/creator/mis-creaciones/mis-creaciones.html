@@ -25,12 +25,41 @@
             <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill ms-1 text-uppercase">{{ addon.tipo }}</span>
           </strong>
           <span>
+            <a [routerLink]="['invitar-creador', addon.id]">Invitar Creador</a> | 
             <a [routerLink]="['subir-archivo', addon.id]">Subir Archivo</a> | 
-            <a href="#">Editar</a> | 
+            <a [routerLink]="['editar-addon', addon.id]">Editar</a> | 
             <a [routerLink]="['/addon', addon.id]">Ver</a>
           </span>
         </div>
         <span class="d-block mt-1">{{ addon.descripcion | slice:0:60 }}{{ (addon.descripcion?.length ?? 0) > 60 ? '...' : '' }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="topbar mt-5 d-flex justify-content-between align-items-center" *ngIf="invitaciones.length > 0">
+  <div>
+    <h2 class="mb-0">Invitaciones Recibidas</h2>
+    <small class="text-muted">Proyectos donde te han invitado a colaborar</small>
+  </div>
+</div>
+
+<div class="card card-dashboard p-4 mt-2" *ngIf="invitaciones.length > 0">
+  <div class="d-flex text-body-secondary pt-3" *ngFor="let invitacion of invitaciones">
+    <img [src]="invitacion.urlMiniatura" class="list-img" alt="Thumbnail of {{ invitacion.nombre }}">
+    <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <strong class="text-gray-dark d-block">
+            {{ invitacion.nombre }}
+            <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill ms-1 text-uppercase">{{ invitacion.tipo }}</span>
+          </strong>
+          <span class="d-block mt-1 text-muted">{{ invitacion.descripcion | slice:0:80 }}...</span>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-success" (click)="aceptar(invitacion.id!)">Aceptar</button>
+          <button class="btn btn-sm btn-danger" (click)="rechazar(invitacion.id!)">Rechazar</button>
+        </div>
       </div>
     </div>
   </div>

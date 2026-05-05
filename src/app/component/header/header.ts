@@ -257,6 +257,7 @@ export class Header implements OnInit {
   isLoggedIn = false;
   userName = '';
   userEmail = '';
+  userId: string | null = null;
   isCreator = false;
 
   // Inbox data
@@ -291,10 +292,11 @@ export class Header implements OnInit {
         this.http.get<any>('http://localhost:8080/api/usuario', {
           headers: { 'Authorization': 'Bearer ' + token }
         }).subscribe({
-          next: (res) => {
+          next: (res: any) => {
             this.isLoggedIn = true;
             this.userName = res.nombre || '';
             this.userEmail = res.email || '';
+            this.userId = res.id;
             this.isCreator = res.esCreador || false;
             this.cdr.detectChanges();
           },

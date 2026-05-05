@@ -15,7 +15,7 @@ import { switchMap } from 'rxjs/operators';
 export class SubirArchivo implements OnInit {
   idAddon: number | null = null;
   archivoData: any = {
-    nombreMostrado: '',
+    nombreMostrado: 'test',
     url: '',
     tipo: '',
     versionJuego: '',
@@ -87,14 +87,18 @@ export class SubirArchivo implements OnInit {
     
     // Generamos un UUID simulado y el formato de URL solicitado
     const uuid = self.crypto.randomUUID();
-    const extension = file.name.split('.').pop();
+    const extension = file.name.split('.').pop() || '';
     const nombreSinExtension = file.name.replace(/\.[^/.]+$/, "");
     
     // Formato: uuid_nombre_archivo.extension
     this.archivoData.url = `${uuid}_${nombreSinExtension}.${extension}`;
     
+    // Asignamos automáticamente el tipo basado en la extensión
+    this.archivoData.tipo = extension.toLowerCase();
+    
     console.log('Archivo seleccionado:', file.name);
     console.log('URL Generada:', this.archivoData.url);
+    console.log('Tipo detectado:', this.archivoData.tipo);
   }
 
   onSubmit() {
@@ -105,12 +109,10 @@ export class SubirArchivo implements OnInit {
       this.errorMessage = "Debes seleccionar un archivo para subir.";
       return;
     }
-    if (!this.archivoData.nombreMostrado || this.archivoData.nombreMostrado.trim().length < 2) {
-      this.errorMessage = "El Nombre mostrado es obligatorio.";
-      return;
-    }
+
+    // El tipo ahora se rellena solo al seleccionar el archivo, pero validamos que esté
     if (!this.archivoData.tipo || this.archivoData.tipo.trim() === '') {
-      this.errorMessage = "Debes seleccionar el Tipo de archivo.";
+      this.errorMessage = "No se ha detectado el tipo de archivo. Asegúrate de que el archivo tenga una extensión válida.";
       return;
     }
     if (!this.archivoData.versionJuego || this.archivoData.versionJuego.trim() === '') {

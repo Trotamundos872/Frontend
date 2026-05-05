@@ -1,5 +1,5 @@
 .sidebar {
-  background: #212529;
+  background: #272727;
   color: white;
   min-height: 100vh;
   padding: 24px 16px;
@@ -26,4 +26,5 @@
 
 .content {
   padding: 20px;
+  padding-top: 0px !important;
 }
