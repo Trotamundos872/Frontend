@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.admin-panel {
+  color: var(--color-text);
+}
+
+.admin-report-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-report-card:hover {
+  transform: translateY(-2px);
+}
+
+.admin-report-card-header,
+.admin-report-card-footer {
+  background-color: transparent;
+}
+
+.admin-report-email {
+  color: inherit;
+}
+
+.admin-report-contact {
+  color: var(--bs-primary);
+}
+
+.admin-report-reason {
+  color: var(--color-muted);
+}
+
+.admin-action-button img {
+  transition: filter 0.2s ease;
+}
+
+:host-context([data-theme='dark']) .admin-panel {
+  color: var(--color-text);
+}
+
+:host-context([data-theme='dark']) .admin-report-card {
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-card-border) !important;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.35) !important;
+}
+
+:host-context([data-theme='dark']) .admin-report-card-header,
+:host-context([data-theme='dark']) .admin-report-card-body,
+:host-context([data-theme='dark']) .admin-report-card-footer {
+  background-color: transparent !important;
+  color: var(--color-text);
+}
+
+:host-context([data-theme='dark']) .admin-report-email, :host-context([data-theme='dark']) .text-secondary-emphasis {
+  color: var(--color-text) !important;
+}
+
+:host-context([data-theme='dark']) .admin-report-reason,
+:host-context([data-theme='dark']) .admin-report-card-footer {
+  color: var(--color-muted) !important;
+}
+
+:host-context([data-theme='dark']) .admin-report-contact {
+  color: #6ee7ff !important;
+}
+
+:host-context([data-theme='dark']) .admin-action-button {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+:host-context([data-theme='dark']) .admin-action-button img {
+  filter: invert(1);
+}

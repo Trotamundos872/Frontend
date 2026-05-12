@@ -26,7 +26,6 @@ export class Maps implements OnInit, OnDestroy {
   constructor(private addonsService: AddonsService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    // Pre-llamada
     this.loadAddons('', 'normal');
   }
 
@@ -51,7 +50,7 @@ export class Maps implements OnInit, OnDestroy {
       this.searchSubscription.unsubscribe();
     }
 
-    // Enviamos siempre la categoría 'mapa'
+    //tag mapa!
     this.searchSubscription = this.addonsService.getAll(termino, orden, 'mapa').pipe(
       timeout(8000),
       retry({ count: 1, delay: 1000 }),

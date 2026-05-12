@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { API_URL, APP_CONFIG, AppConfig } from '../../app.constants';
 
 @Component({
   selector: 'app-register',
@@ -28,6 +29,8 @@ export class Register {
   
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
+  private apiUrl = inject(API_URL);
+  private appConfig = inject<AppConfig>(APP_CONFIG);
 
   constructor(private http: HttpClient) { }
 
@@ -70,7 +73,7 @@ export class Register {
 
 
     //Uso endpoint privado de mi web en produccion
-    this.http.post('https://www.trmc-addons.com/tfg-media/mail.php', emailBody).subscribe({
+    this.http.post(this.appConfig.mailUrl, emailBody).subscribe({
       next: (res: any) => {
         this.loading = false;
         this.step = 2;
@@ -101,7 +104,7 @@ export class Register {
     this.registerStatusClass = "alert-info";
     this.cdr.detectChanges();
 
-    const baseUrl = "http://localhost:8080/api/usuario";
+    const baseUrl = `${this.apiUrl}/api/usuario`;
     const body = {
       nombre: this.nombre,
       email: this.email,

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Input, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, Input, ChangeDetectorRef, PLATFORM_ID, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -9,6 +9,148 @@ import { of, timeout, catchError } from 'rxjs';
 import { ThemeService } from '../../services/theme.service';
 import { Inbox } from '../inbox/inbox';
 import { Addons } from '../../services/addons';
+import { API_URL, APP_CONFIG, AppConfig } from '../../app.constants';
+
+//MODAL de recuperación de contraseña
+@Component({
+  selector: 'app-modal-recovery-content',
+  standalone: true,
+  imports: [CommonModule, NgbModule, FormsModule],
+  template: `
+    <div class="modal-header">
+      <h4 class="modal-title">Recuperar Contraseña</h4>
+      <button 
+        type="button" 
+        class="btn-close" 
+        aria-label="Close" 
+        (click)="activeModal.dismiss('Cancelado')">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div *ngIf="step === 1">
+        <p>Introduce tu correo para recibir un código de recuperación.</p>
+        <input type="email" class="form-control" placeholder="Email" [(ngModel)]="email">
+      </div>
+
+      <div *ngIf="step === 2">
+        <p>Introduce el código enviado y tu nueva contraseña.</p>
+        <input type="text" class="form-control" placeholder="Código de 6 dígitos" [(ngModel)]="codigo">
+        <br>
+        <input type="password" class="form-control" placeholder="Nueva Contraseña" [(ngModel)]="nuevaPassword">
+      </div>
+      
+      <div *ngIf="statusMessage" class="alert mt-3" [ngClass]="statusClass" role="alert">
+         {{ statusMessage }}
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button 
+        *ngIf="step === 1"
+        type="button" 
+        class="btn btn-primary" 
+        (click)="solicitarCodigo()" 
+        [disabled]="loading">
+        {{ loading ? 'Enviando...' : 'Enviar Código' }}
+      </button>
+      <button 
+        *ngIf="step === 2"
+        type="button" 
+        class="btn btn-success" 
+        (click)="resetPassword()" 
+        [disabled]="loading">
+        {{ loading ? 'Actualizando...' : 'Cambiar Contraseña' }}
+      </button>
+    </div>
+  `,
+})
+export class NgbdRecoveryModalContent {
+  public apiUrl = inject(API_URL);
+  public appConfig = inject<AppConfig>(APP_CONFIG);
+  activeModal = inject(NgbActiveModal);
+  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+
+  email = '';
+  codigo = '';
+  nuevaPassword = '';
+  step = 1;
+  loading = false;
+  statusMessage = '';
+  statusClass = '';
+
+  solicitarCodigo() {
+    if (!this.email) {
+      this.statusMessage = "Introduce tu email.";
+      this.statusClass = "alert-warning";
+      return;
+    }
+
+    this.loading = true;
+    this.http.post(`${this.apiUrl}/auth/solicitar-recuperacion`, { email: this.email }).subscribe({
+      next: (res: any) => {
+        // Enviar el email usando el mailUrl del config (como en el registro)
+        const emailBody = {
+          email: this.email,
+          subject: "Código de recuperación de contraseña",
+          message: `Tu código de recuperación es: ${res.codigo}. Expira en 15 minutos.`
+        };
+
+        this.http.post(this.appConfig.mailUrl, emailBody).subscribe({
+          next: () => {
+            this.loading = false;
+            this.step = 2;
+            this.statusMessage = "Código enviado a tu correo.";
+            this.statusClass = "alert-success";
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            this.loading = false;
+            this.statusMessage = "Código generado, pero error al enviar el email.";
+            this.statusClass = "alert-danger";
+            this.cdr.detectChanges();
+          }
+        });
+      },
+      error: (err) => {
+        this.loading = false;
+        this.statusMessage = err.error?.error || "Error al solicitar el código.";
+        this.statusClass = "alert-danger";
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  resetPassword() {
+    if (!this.codigo || !this.nuevaPassword) {
+      this.statusMessage = "Completa todos los campos.";
+      this.statusClass = "alert-warning";
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.loading = true;
+    this.http.post(`${this.apiUrl}/auth/reset-password`, { 
+      email: this.email, 
+      codigo: this.codigo, 
+      nuevaPassword: this.nuevaPassword 
+    }).subscribe({
+      next: () => {
+        this.loading = false;
+        this.statusMessage = "Contraseña actualizada correctamente.";
+        this.statusClass = "alert-success";
+        this.cdr.detectChanges();
+        setTimeout(() => this.activeModal.close('success'), 1500);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.statusMessage = err.error?.error || "Error al cambiar la contraseña.";
+        this.statusClass = "alert-danger";
+        this.cdr.detectChanges();
+      }
+    });
+  }
+}
 
 //MODAL de login
 @Component({
@@ -36,6 +178,7 @@ import { Addons } from '../../services/addons';
       </div>
 
       <p class="mt-2">¿No tienes Cuenta? <a routerLink="/register" (click)="activeModal.dismiss('Registro')" class="link" style="cursor:pointer; color:blue;">Registrarte</a></p>
+      <p class="mt-1"><a (click)="activeModal.close('Recuperar')" class="link" style="cursor:pointer; color:blue;">¿Has olvidado tu contraseña?</a></p>
     </div>
     
     <div class="modal-footer">
@@ -50,6 +193,7 @@ import { Addons } from '../../services/addons';
   `,
 })
 export class NgbdModalContent {
+  public apiUrl = inject(API_URL);
   activeModal = inject(NgbActiveModal);
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
@@ -72,7 +216,7 @@ export class NgbdModalContent {
     this.loginStatus = "Espere Un Momento";
     this.loginStatusClass = "alert-info";
 
-    const baseUrl = "http://localhost:8080/auth/login";
+    const baseUrl = `${this.apiUrl}/auth/login`;
 
     this.http.post(baseUrl, { email: this.email, password: this.password }).pipe(
       timeout(5000),
@@ -162,6 +306,7 @@ export class NgbdModalContent {
   `,
 })
 export class NgbdUserModalContent {
+  public apiUrl = inject(API_URL);
   activeModal = inject(NgbActiveModal);
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
@@ -194,7 +339,7 @@ export class NgbdUserModalContent {
     this.statusClass = "alert-info";
     this.cdr.detectChanges();
 
-    this.http.post('http://localhost:8080/api/creador', {}, {
+    this.http.post(`${this.apiUrl}/api/creador`, {}, {
       headers: { 'Authorization': 'Bearer ' + token }
     }).subscribe({
       next: () => {
@@ -247,6 +392,7 @@ export class NgbdInboxModalContent {
   styleUrls: ['./header.css'],
 })
 export class Header implements OnInit {
+  public apiUrl = inject(API_URL);
   private modalService = inject(NgbModal);
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
@@ -291,7 +437,7 @@ export class Header implements OnInit {
       const token = localStorage.getItem("jwtToken");
       if (token) {
         // Intentar cargar info del perfil si hay token
-        this.http.get<any>('http://localhost:8080/api/usuario', {
+        this.http.get<any>(`${this.apiUrl}/api/usuario`, {
           headers: { 'Authorization': 'Bearer ' + token }
         }).subscribe({
           next: (res: any) => {
@@ -341,8 +487,22 @@ export class Header implements OnInit {
       (result) => {
         if (result === 'success') {
           if (isPlatformBrowser(this.platformId)) {
-            window.location.href = '/';
+            window.location.reload();
           }
+        } else if (result === 'Recuperar') {
+          this.openRecovery();
+        }
+      },
+      (reason) => { }
+    );
+  }
+
+  openRecovery() {
+    const modalRef = this.modalService.open(NgbdRecoveryModalContent);
+    modalRef.result.then(
+      (result) => {
+        if (result === 'success') {
+          this.openLogin(); // Volver al login tras recuperar
         }
       },
       (reason) => { }

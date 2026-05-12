@@ -15,3 +15,8 @@ c:; cd 'c:\Users\Marcos y Ezequiel\Desktop\TFG'; & 'C:\Program Files\Java\jdk-23
 
 
 sudo docker compose up --build
+
+
+cd "c:\Users\Marcos y Ezequiel\Desktop\TFG\Frontend"
+npm.cmd run sync:config
+npm.cmd start

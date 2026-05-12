@@ -2,6 +2,11 @@
   "name": "addonsmcenter",
   "version": "0.0.0",
   "scripts": {
+    "sync:config": "node scripts/sync-app-config.mjs",
+    "prestart": "node scripts/sync-app-config.mjs",
+    "prebuild": "node scripts/sync-app-config.mjs",
+    "prewatch": "node scripts/sync-app-config.mjs",
+    "pretest": "node scripts/sync-app-config.mjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",

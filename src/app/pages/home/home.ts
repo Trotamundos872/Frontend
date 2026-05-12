@@ -55,7 +55,7 @@ export class Home implements OnInit, OnDestroy {
       this.searchSubscription.unsubscribe();
     }
 
-    // Petición al servicio (Home carga todo, por eso categoria '')
+    //llamada a service
     this.searchSubscription = this.addons.getAll(termino, orden, '').pipe(
       tap(data => console.log('Home: Data received from service:', data?.length || 0, 'items')),
       retry({ count: 1, delay: 1000 }),
@@ -82,8 +82,6 @@ export class Home implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       }
     });
-
-    // Seguridad: Si después de 10 segundos sigue cargando, forzar fin de carga
     setTimeout(() => {
       if (this.loading) {
         console.warn('Home: Loading timeout reached, forcing loading = false');
@@ -98,9 +96,7 @@ export class Home implements OnInit, OnDestroy {
       this.randomAddons = [];
       return;
     }
-    // Clonar y barajar
     const shuffled = [...this.valores].sort(() => 0.5 - Math.random());
-    // Tomar los primeros 3
     this.randomAddons = shuffled.slice(0, 3);
   }
 }

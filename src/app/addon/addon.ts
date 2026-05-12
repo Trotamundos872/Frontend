@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { MarkdownPipe } from '../pipes/markdown.pipe';
 import { FormsModule } from '@angular/forms';
+import { API_URL } from '../app.constants';
 
 //Interfaz para definir la estructura de los datos del addon
 interface AddonData {
@@ -47,6 +48,7 @@ export class Addon implements OnInit {
 
   private platformId = inject(PLATFORM_ID);
   private http = inject(HttpClient);
+  private apiUrl = inject(API_URL);
 
   constructor(private route: ActivatedRoute, private addonsService: Addons, private cdr: ChangeDetectorRef) { }
 
@@ -122,7 +124,7 @@ export class Addon implements OnInit {
   onDownload(archivoId: number) {
     this.addonsService.registrarDescarga(archivoId).subscribe({
       next: () => {
-        // Incrementamos localmente para feedback inmediato si fuera necesario
+
         const archivo = this.archivos.find(a => a.id === archivoId);
         if (archivo) {
           archivo.numeroDescargas = (archivo.numeroDescargas || 0) + 1;
@@ -185,7 +187,7 @@ export class Addon implements OnInit {
     const tipo = this.archivoReportadoId ? 'archivo' : 'addon';
     const referenciaId = this.archivoReportadoId ?? this.valoresAddon.id;
 
-    this.http.post('http://localhost:8080/api/reporte', {
+    this.http.post(`${this.apiUrl}/api/reporte`, {
       tipo,
       referenciaId,
       razon: this.razonReporte.trim()

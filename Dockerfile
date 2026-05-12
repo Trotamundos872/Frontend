@@ -2,6 +2,20 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+ARG APP_PROTOCOL=http
+ARG FRONTEND_HOST=localhost
+ARG FRONTEND_PORT=4000
+ARG BACKEND_HOST=localhost
+ARG BACKEND_PORT=8080
+ARG MEDIA_BASE_URL=https://www.trmc-addons.com/tfg-media
+
+ENV APP_PROTOCOL=${APP_PROTOCOL}
+ENV FRONTEND_HOST=${FRONTEND_HOST}
+ENV FRONTEND_PORT=${FRONTEND_PORT}
+ENV BACKEND_HOST=${BACKEND_HOST}
+ENV BACKEND_PORT=${BACKEND_PORT}
+ENV MEDIA_BASE_URL=${MEDIA_BASE_URL}
+
 # Instalar herramientas necesarias para Angular build
 RUN apk add --no-cache bash git python3 make g++
 
@@ -25,11 +39,14 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 
+ARG FRONTEND_PORT=4000
+ENV PORT=${FRONTEND_PORT}
+
 # Copy built app
 COPY --from=build /app/dist/addonsmcenter ./dist/addonsmcenter
 
 # Expose port
-EXPOSE 4000
+EXPOSE ${FRONTEND_PORT}
 
 # Run server
 CMD ["node", "dist/addonsmcenter/server/server.mjs"]

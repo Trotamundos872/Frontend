@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, timeout, catchError, of, tap } from 'rxjs';
 import { Addon } from '../models/addon.model';
 import { isPlatformBrowser } from '@angular/common';
+import { API_URL, APP_CONFIG, AppConfig } from '../app.constants';
 
 
 
@@ -11,7 +12,9 @@ import { isPlatformBrowser } from '@angular/common';
 })
 
 export class Addons {
-  private baseUrl = 'http://localhost:8080/api/addon';
+  private apiUrl = inject(API_URL);
+  private appConfig = inject<AppConfig>(APP_CONFIG);
+  private baseUrl = `${this.apiUrl}/api/addon`;
   private platformId = inject(PLATFORM_ID);
 
   constructor(private http: HttpClient) { }
@@ -56,7 +59,7 @@ export class Addons {
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.get<any>(`http://localhost:8080/api/creador/mi-perfil`, {
+    return this.http.get<any>(`${this.apiUrl}/api/creador/mi-perfil`, {
       headers: { 'Authorization': 'Bearer ' + token }
     }).pipe(
       timeout(5000)
@@ -64,7 +67,7 @@ export class Addons {
   }
 
   public getCreadorById(id: string): Observable<any> {
-    return this.http.get<any>(`http://localhost:8080/api/creador/${id}`).pipe(
+    return this.http.get<any>(`${this.apiUrl}/api/creador/${id}`).pipe(
       timeout(5000)
     );
   }
@@ -74,7 +77,7 @@ export class Addons {
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.put<any>(`http://localhost:8080/api/creador/mi-perfil`, profileData, {
+    return this.http.put<any>(`${this.apiUrl}/api/creador/mi-perfil`, profileData, {
       headers: { 'Authorization': 'Bearer ' + token }
     }).pipe(
       timeout(5000)
@@ -123,27 +126,26 @@ export class Addons {
     
     const idAddon = archivoData.addon.id;
     
-    return this.http.post<any>(`http://localhost:8080/api/archivos/subir?idAddon=${idAddon}`, archivoData, {
+    return this.http.post<any>(`${this.apiUrl}/api/archivos/subir?idAddon=${idAddon}`, archivoData, {
       headers: { 'Authorization': 'Bearer ' + token }
     }).pipe(
       timeout(10000)
     );
   }
 
+  //enpoint de mi servidor
   public subirArchivoReal(file: File, nombreDestino: string): Observable<any> {
     const formData = new FormData();
-    // El PHP espera el campo 'archivo'
-    // Usamos un nuevo File para renombrarlo antes de enviarlo
     const renamedFile = new File([file], nombreDestino, { type: file.type });
     formData.append('archivo', renamedFile);
 
-    return this.http.post<any>('https://www.trmc-addons.com/tfg-media/subir.php', formData).pipe(
+    return this.http.post<any>(this.appConfig.uploadUrl, formData).pipe(
       timeout(30000) // 30 segundos para archivos grandes
     );
   }
 
   public getArchivosByAddon(idAddon: string | number): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8080/api/archivos/addon/${idAddon}`).pipe(
+    return this.http.get<any[]>(`${this.apiUrl}/api/archivos/addon/${idAddon}`).pipe(
       timeout(5000),
       catchError(err => {
         console.error('Error fetching archivos:', err);
@@ -171,7 +173,7 @@ export class Addons {
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.post<any>(`http://localhost:8080/api/subscripcion/susbscribe/${idCreador}`, {}, {
+    return this.http.post<any>(`${this.apiUrl}/api/subscripcion/susbscribe/${idCreador}`, {}, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
   }
@@ -181,7 +183,7 @@ export class Addons {
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.get<any>(`http://localhost:8080/api/subscripcion/estado/${idCreador}`, {
+    return this.http.get<any>(`${this.apiUrl}/api/subscripcion/estado/${idCreador}`, {
       headers: { 'Authorization': 'Bearer ' + token }
     }).pipe(
       catchError(() => of({ subscrito: false }))
@@ -203,7 +205,7 @@ export class Addons {
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.get<any[]>(`http://localhost:8080/api/subscripcion/detalles-subscritos`, {
+    return this.http.get<any[]>(`${this.apiUrl}/api/subscripcion/detalles-subscritos`, {
       headers: { 'Authorization': 'Bearer ' + token }
     }).pipe(
       catchError(err => {
@@ -214,11 +216,11 @@ export class Addons {
   }
 
   public registrarDescarga(idArchivo: number): Observable<any> {
-    return this.http.post<any>(`http://localhost:8080/api/archivos/descargar/${idArchivo}`, {});
+    return this.http.post<any>(`${this.apiUrl}/api/archivos/descargar/${idArchivo}`, {});
   }
 
   public getAllCreadores(): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8080/api/creador/todos`).pipe(
+    return this.http.get<any[]>(`${this.apiUrl}/api/creador/todos`).pipe(
       catchError(err => {
         console.error('Error al obtener todos los creadores:', err);
         return of([]);
@@ -231,13 +233,13 @@ export class Addons {
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.get<any>(`http://localhost:8080/api/addon/invitar/enviar/${idAddon}/${idCreador}`, {
+    return this.http.get<any>(`${this.apiUrl}/api/addon/invitar/enviar/${idAddon}/${idCreador}`, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
   }
 
   public getRanking(): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8080/api/creador/ranking`);
+    return this.http.get<any[]>(`${this.apiUrl}/api/creador/ranking`);
   }
 
   public getInvitacionesPendientes(): Observable<any[]> {
@@ -245,27 +247,27 @@ export class Addons {
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.get<any[]>(`http://localhost:8080/api/addon/mis-invitaciones`, {
+    return this.http.get<any[]>(`${this.apiUrl}/api/addon/mis-invitaciones`, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
   }
 
-  public aceptarInvitacion(idAddon: number): Observable<any> {
+  public aceptarInvitacion(idInvitacion: number): Observable<any> {
     let token = '';
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.get<any>(`http://localhost:8080/api/addon/invitar/aceptar/${idAddon}`, {
+    return this.http.get<any>(`${this.apiUrl}/api/addon/invitar/aceptar/${idInvitacion}`, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
   }
 
-  public rechazarInvitacion(idAddon: number): Observable<any> {
+  public rechazarInvitacion(idInvitacion: number): Observable<any> {
     let token = '';
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.get<any>(`http://localhost:8080/api/addon/invitar/rechazar/${idAddon}`, {
+    return this.http.get<any>(`${this.apiUrl}/api/addon/invitar/rechazar/${idInvitacion}`, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
   }
@@ -275,12 +277,12 @@ export class Addons {
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.get<any>(`http://localhost:8080/api/addon/invitar/bloquear/${idAddon}/${idCreador}`, {
+    return this.http.get<any>(`${this.apiUrl}/api/addon/invitar/bloquear/${idAddon}/${idCreador}`, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
   }
 
   public getCreadoresDeUnAddon(idAddon: number): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8080/api/addon/creadores-full/${idAddon}`);
+    return this.http.get<any[]>(`${this.apiUrl}/api/addon/creadores-full/${idAddon}`);
   }
 }

@@ -26,7 +26,6 @@ export class Skins implements OnInit, OnDestroy {
   constructor(private addonsService: AddonsService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    // Pre-llamada
     this.loadAddons('', 'normal');
   }
 
@@ -51,7 +50,7 @@ export class Skins implements OnInit, OnDestroy {
       this.searchSubscription.unsubscribe();
     }
 
-    // Enviamos siempre la categoría 'Skin'
+    //tag skin
     this.searchSubscription = this.addonsService.getAll(termino, orden, 'Skin').pipe(
       timeout(8000),
       retry({ count: 1, delay: 1000 }),

@@ -26,7 +26,7 @@ export class Addons implements OnInit, OnDestroy {
   constructor(private addonsService: AddonsService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    // Pre-llamada filtrando por "Addon"
+    //traer addons sin filtro
     this.loadAddons('', 'normal');
   }
 
@@ -51,9 +51,9 @@ export class Addons implements OnInit, OnDestroy {
       this.searchSubscription.unsubscribe();
     }
 
-    // Enviamos siempre la categoría 'Addon'
+   //categoria addon!
     this.searchSubscription = this.addonsService.getAll(termino, orden, 'Addon').pipe(
-      timeout(8000), // Si el servidor tarda más de 8s, lanza error y quita el Cargando...
+      timeout(8000), 
       retry({ count: 1, delay: 1000 }),
       takeUntil(this.destroy$),
       catchError(err => {
@@ -76,7 +76,6 @@ export class Addons implements OnInit, OnDestroy {
       }
     });
 
-    // Seguridad: Si después de 10 segundos sigue cargando, forzar fin de carga
     setTimeout(() => {
       if (this.loading) {
         this.loading = false;

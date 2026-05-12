@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { Addons } from "../services/addons";
 import { of } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
+import { API_URL } from '../app.constants';
 
 import { Addon } from '../models/addon.model';
 
@@ -40,6 +41,7 @@ export class Perfil implements OnInit {
 
   private platformId = inject(PLATFORM_ID);
   private http = inject(HttpClient);
+  private apiUrl = inject(API_URL);
 
   constructor(private route: ActivatedRoute, private addonsService: Addons, private cdr: ChangeDetectorRef) { }
 
@@ -68,12 +70,11 @@ export class Perfil implements OnInit {
     });
   }
 
+  //subscribirte
   public toggleSub() {
     this.subLoading = true;
     this.addonsService.toggleSubscripcion(Number(this.id)).subscribe({
       next: (res) => {
-        // El endpoint devuelve el objeto suscripcion si se crea, o un mensaje si se borra
-        // pero podemos simplemente volver a checkear el estado o alternarlo localmente
         this.subscrito = !this.subscrito;
         this.subLoading = false;
         this.cdr.detectChanges();
@@ -158,7 +159,7 @@ export class Perfil implements OnInit {
     this.reportando = true;
     this.reporteError = '';
 
-    this.http.post('http://localhost:8080/api/reporte', {
+    this.http.post(`${this.apiUrl}/api/reporte`, {
       tipo: 'usuario',
       referenciaId: Number(this.id),
       razon: this.razonReporte.trim()

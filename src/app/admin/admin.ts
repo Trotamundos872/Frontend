@@ -2,6 +2,7 @@ import { Component, OnInit, inject, PLATFORM_ID, ChangeDetectorRef } from '@angu
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule, HttpClient, HttpHeaders } from '@angular/common/http';
+import { API_URL } from '../app.constants';
 
 @Component({
   selector: 'app-admin',
@@ -19,6 +20,7 @@ export class Admin implements OnInit {
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
+  private apiUrl = inject(API_URL);
 
   ngOnInit() {
     this.cargarReportes();
@@ -35,7 +37,7 @@ export class Admin implements OnInit {
       return;
     }
     const headers = new HttpHeaders({ Authorization: 'Bearer ' + token });
-    this.http.get<any[]>('http://localhost:8080/api/reporte', { headers })
+    this.http.get<any[]>(`${this.apiUrl}/api/reporte`, { headers })
       .subscribe({
         next: (data) => {
           this.reportes = data;
@@ -59,7 +61,7 @@ export class Admin implements OnInit {
     }
 
     const headers = new HttpHeaders({ Authorization: 'Bearer ' + token });
-    this.http.delete(`http://localhost:8080/api/reporte/${id}`, { headers })
+    this.http.delete(`${this.apiUrl}/api/reporte/${id}`, { headers })
       .subscribe({
         next: () => {
           this.reportes = this.reportes.filter(r => r.id !== id);
@@ -81,7 +83,7 @@ export class Admin implements OnInit {
     }
 
     const headers = new HttpHeaders({ Authorization: 'Bearer ' + token });
-    this.http.post(`http://localhost:8080/api/reporte/deshabilitar/${reporte.id}`, {}, { headers })
+    this.http.post(`${this.apiUrl}/api/reporte/deshabilitar/${reporte.id}`, {}, { headers })
       .subscribe({
         next: () => {
           alert('Entidad deshabilitada correctamente');
