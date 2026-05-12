@@ -269,4 +269,18 @@ export class Addons {
       headers: { 'Authorization': 'Bearer ' + token }
     });
   }
+
+  public denegarAcceso(idAddon: number, idCreador: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.get<any>(`http://localhost:8080/api/addon/invitar/bloquear/${idAddon}/${idCreador}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+  }
+
+  public getCreadoresDeUnAddon(idAddon: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8080/api/addon/creadores-full/${idAddon}`);
+  }
 }

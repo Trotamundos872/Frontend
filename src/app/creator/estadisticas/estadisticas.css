@@ -8,3 +8,11 @@
 .card {
   margin-top: 20px;
 }
+
+@media (max-width: 768px) {
+  .subheader-creator {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+}

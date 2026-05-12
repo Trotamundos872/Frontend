@@ -1,4 +1,4 @@
-/* Styles for mi-perfil */
+
 .card-dashboard {
   border: 0;
   border-radius: 16px;
@@ -13,26 +13,12 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
-.form-label {
-  font-weight: 500;
-}
 
-.form-control:focus {
-  border-color: #212529;
-  box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.1);
-}
 
-.btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.alert {
-  border-radius: 16px;
-}
-
-.spinner-carga {
-  display: flex;
-  justify-content: center;
-  padding: 24px 0;
+@media (max-width: 768px) {
+  .subheader-creator {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
 }

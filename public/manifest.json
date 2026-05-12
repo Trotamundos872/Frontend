@@ -1,0 +1,25 @@
+{
+  "name": "Add-Ons MCenter",
+  "short_name": "MCenter",
+  "description": "Plataforma para descubrir y gestionar add-ons de Minecraft.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "/c.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

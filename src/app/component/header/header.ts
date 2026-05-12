@@ -253,12 +253,14 @@ export class Header implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private addonsService = inject(Addons);
   public themeService = inject(ThemeService);
+  private router = inject(Router);
 
   isLoggedIn = false;
   userName = '';
   userEmail = '';
   userId: string | null = null;
   isCreator = false;
+  isAdmin = false;
 
   // Inbox data
   subscritos: any[] = [];
@@ -298,6 +300,7 @@ export class Header implements OnInit {
             this.userEmail = res.email || '';
             this.userId = res.id;
             this.isCreator = res.esCreador || false;
+            this.isAdmin = res.esAdmin || false;
             this.cdr.detectChanges();
           },
           error: (err) => {
@@ -329,6 +332,7 @@ export class Header implements OnInit {
     this.userName = '';
     this.userEmail = '';
     this.isCreator = false;
+    this.isAdmin = false;
   }
 
   openLogin() {
@@ -337,7 +341,7 @@ export class Header implements OnInit {
       (result) => {
         if (result === 'success') {
           if (isPlatformBrowser(this.platformId)) {
-            window.location.reload();
+            window.location.href = '/';
           }
         }
       },

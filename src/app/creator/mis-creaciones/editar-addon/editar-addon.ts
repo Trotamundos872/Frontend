@@ -69,6 +69,9 @@ export class EditarAddon implements OnInit, AfterViewInit {
           return;
         }
 
+        //No va
+        $.fn.markdownEditorBsVersion = '5';
+
         $('#descripcionTextarea').markdownEditor({
           preview: true,
           onPreview: function (content: any, callback: any) {

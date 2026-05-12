@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, inject, PLATFORM_ID } from '@angular/core';
+import { Component, AfterViewInit, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -27,12 +27,16 @@ export class CrearAddon implements AfterViewInit {
     textoAddon: ''
   };
 
+  loading = false;
   errorMessage: string = '';
   successMessage: string = '';
 
   private platformId = inject(PLATFORM_ID);
+  private addonsService = inject(Addons);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
-  constructor(private addonsService: Addons, private router: Router) { }
+  constructor() { }
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -41,14 +45,8 @@ export class CrearAddon implements AfterViewInit {
   }
 
   private initEditorWithRetries(retryCount: number) {
-    if (retryCount > 15) {
-      console.error('CrearAddon: Max retries reached for editor initialization');
-      console.log('CrearAddon Diagnostic:', {
-        jQuery_defined: typeof $ !== 'undefined',
-        markdownEditor_defined: typeof $ !== 'undefined' && typeof $.fn.markdownEditor !== 'undefined',
-        marked_defined: typeof marked !== 'undefined',
-        ace_defined: typeof (window as any).ace !== 'undefined'
-      });
+    if (retryCount > 20) {
+      console.error('CrearAddon: No se pudo inicializar el editor Markdown tras varios intentos.');
       return;
     }
 
@@ -58,32 +56,40 @@ export class CrearAddon implements AfterViewInit {
         const isPluginOk = isJQueryOk && typeof $.fn.markdownEditor !== 'undefined';
 
         if (!isPluginOk) {
-          console.log(`CrearAddon: Waiting for dependencies (Retry ${retryCount + 1}). JQuery: ${isJQueryOk}, Plugin: ${isPluginOk}`);
           this.initEditorWithRetries(retryCount + 1);
           return;
         }
 
-        console.log('CrearAddon: Dependencies ready, initializing...');
-        $('#descripcionTextarea').markdownEditor({
+        // Establecer la versión de Bootstrap para el plugin
+        $.fn.markdownEditorBsVersion = '5';
+
+        const $textarea = $('#descripcionTextarea');
+        if ($textarea.length === 0) {
+          this.initEditorWithRetries(retryCount + 1);
+          return;
+        }
+
+        $textarea.markdownEditor({
           preview: true,
           onPreview: function (content: any, callback: any) {
             try {
-              if (typeof marked === 'undefined') {
-                callback('Error: marked no está definido.');
-                return;
+              if (typeof marked !== 'undefined') {
+                const parsed = marked.parse ? marked.parse(content) : marked(content);
+                callback(parsed);
+              } else {
+                callback('Error: marked no cargado.');
               }
-              const parsed = marked.parse(content);
-              callback(parsed);
             } catch (e) {
               callback('Error al procesar markdown.');
             }
           }
         });
+
+        this.cdr.detectChanges();
       } catch (e) {
-        console.error('CrearAddon: Exception during init:', e);
         this.initEditorWithRetries(retryCount + 1);
       }
-    }, 500);
+    }, 300);
   }
 
   onSubmit() {

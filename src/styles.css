@@ -345,6 +345,10 @@ footer i {
   color: #fff !important;
 }
 
+[data-theme='dark'] .d-block {
+  color: #fff !important;
+}
+
 [data-theme='dark'] .texto-footer img, [data-theme='dark'] .like-heart {
   filter: invert(1) !important;
 }
@@ -353,6 +357,10 @@ footer i {
 [data-theme='dark'] td,[data-theme='dark'] th,[data-theme='dark'] .accordion-body  {
   background-color: var(--color-card-bg) !important;
   color: #fff !important;
+}
+
+[data-theme='dark'] .mt-2 a, [data-theme='dark'] span a {
+color: rgb(13 253 233) !important;
 }
 
 [data-theme='dark'] td img {
@@ -381,4 +389,10 @@ footer i {
   margin: auto;
   text-align: center;
   display: flex
+}
+
+@media (max-width: 768px) {
+  select {
+    width: 6px !important;
+  }
 }

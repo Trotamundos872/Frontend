@@ -34,9 +34,17 @@
                   <strong>{{ creador.usuario?.nombre }}</strong>
                 </td>
                 <td class="text-end">
-                  <button class="btn btn-dark btn-sm" (click)="invitar(creador.id)">
-                    Invitar al Proyecto
-                  </button>
+                  <ng-container [ngSwitch]="getStatus(creador.id)">
+                    <button *ngSwitchCase="'ninguno'" class="btn btn-dark btn-sm" (click)="invitar(creador.id)">
+                      Invitar al Proyecto
+                    </button>
+                    <button *ngSwitchCase="'rechazado'" class="btn btn-dark btn-sm" (click)="invitar(creador.id)">
+                      Re-Invitar al Proyecto
+                    </button>
+                    <button *ngSwitchDefault class="btn btn-danger btn-sm" (click)="denegar(creador.id)">
+                      Denegar Acceso
+                    </button>
+                  </ng-container>
                 </td>
               </tr>
               <tr *ngIf="creadores.length === 0">

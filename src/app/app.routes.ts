@@ -20,6 +20,8 @@ import { Estadisticas } from './creator/estadisticas/estadisticas';
 import { MiPerfil } from './creator/mi-perfil/mi-perfil';
 import { InvitarCreador } from './creator/mis-creaciones/invitar-creador/invitar-creador';
 
+import { Admin } from './admin/admin';
+
 export const routes: Routes = [
     { path: '', component: Home },
     { path: 'about', component: About },
@@ -45,6 +47,10 @@ export const routes: Routes = [
             { path: 'mi-perfil', component: MiPerfil },
             { path: '', redirectTo: 'mis-creaciones', pathMatch: 'full' }
         ]
+    },
+    { 
+        path: 'admin', 
+        component: Admin
     },
     { path: '**', redirectTo: '' },
 ];

@@ -8,37 +8,39 @@
   <p class="mt-2 text-muted">Calculando ranking de creadores...</p>
 </div>
 
-<table class="table table-striped align-middle" *ngIf="!loading">
-  <thead>
-    <tr class="text-center">
-      <th scope="col">Posición</th>
-      <th scope="col">Creador</th>
-      <th scope="col">Total De Descargas</th>
-      <th scope="col">Add-On Mas Valorado</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="text-center" *ngFor="let creador of ranking; let i = index">
-      <th scope="row">{{ i + 1 }}º</th>
-      <td>
-        <div class="d-flex align-items-center justify-content-center">
-          <img src="user-solid-full.svg" width="25" height="25" class="me-2" style="width: 30px">
-          <span>{{ creador.nombre }}</span>
-        </div>
-      </td>
-      <td>{{ formatDescargas(creador.totalDescargas) }}</td>
-      <td>
-        <div class="d-flex align-items-center justify-content-center">
-          <span class="me-2">{{ creador.mejorAddonNombre }}</span>
-          <span class="badge text-bg-warning d-inline-flex align-items-center" *ngIf="creador.mejorAddonNombre !== 'N/A'">
-            <img src="heart-solid-full.svg" width="12" height="12" class="me-1" style="width: 10px"> 
-            {{ creador.mejorAddonLikes }}
-          </span>
-        </div>
-      </td>
-    </tr>
-    <tr *ngIf="ranking.length === 0">
-      <td colspan="4" class="text-center py-4 text-muted">No hay datos de creadores todavía.</td>
-    </tr>
-  </tbody>
-</table>
+<div class="table-responsive">
+  <table class="table table-striped align-middle" *ngIf="!loading">
+    <thead>
+      <tr class="text-center">
+        <th scope="col">Posición</th>
+        <th scope="col">Creador</th>
+        <th scope="col">Total De Descargas</th>
+        <th scope="col">Add-On Mas Valorado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="text-center" *ngFor="let creador of ranking; let i = index">
+        <th scope="row">{{ i + 1 }}º</th>
+        <td>
+          <div class="d-flex align-items-center justify-content-center">
+            <img src="user-solid-full.svg" width="25" height="25" class="me-2" style="width: 30px">
+            <span>{{ creador.nombre }}</span>
+          </div>
+        </td>
+        <td>{{ formatDescargas(creador.totalDescargas) }}</td>
+        <td>
+          <div class="d-flex align-items-center justify-content-center">
+            <span class="me-2">{{ creador.mejorAddonNombre }}</span>
+            <span class="badge text-bg-warning d-inline-flex align-items-center" *ngIf="creador.mejorAddonNombre !== 'N/A'">
+              <img src="heart-solid-full.svg" width="12" height="12" class="me-1" style="width: 10px"> 
+              {{ creador.mejorAddonLikes }}
+            </span>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="ranking.length === 0">
+        <td colspan="4" class="text-center py-4 text-muted">No hay datos de creadores todavía.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

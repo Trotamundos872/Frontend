@@ -84,21 +84,32 @@ export class SubirArchivo implements OnInit {
   handleFile(file: File) {
     this.selectedFile = file;
     this.selectedFileName = file.name;
+    this.archivoData.nombreMostrado = file.name;
     
-    // Generamos un UUID simulado y el formato de URL solicitado
+    // Generamos nombre del addon
     const uuid = self.crypto.randomUUID();
-    const extension = file.name.split('.').pop() || '';
+    const extension = (file.name.split('.').pop() || '').toLowerCase();
     const nombreSinExtension = file.name.replace(/\.[^/.]+$/, "");
+    const nombreSeguro = this.generarNombreSeguro(nombreSinExtension);
+
+    this.archivoData.url = `${uuid}_${nombreSeguro}.${extension}`;
     
-    // Formato: uuid_nombre_archivo.extension
-    this.archivoData.url = `${uuid}_${nombreSinExtension}.${extension}`;
-    
-    // Asignamos automáticamente el tipo basado en la extensión
-    this.archivoData.tipo = extension.toLowerCase();
+
+    this.archivoData.tipo = extension;
     
     console.log('Archivo seleccionado:', file.name);
     console.log('URL Generada:', this.archivoData.url);
     console.log('Tipo detectado:', this.archivoData.tipo);
+  }
+
+  private generarNombreSeguro(nombre: string): string {
+    return nombre
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9._-]/g, '_')
+      .replace(/_+/g, '_');
   }
 
   onSubmit() {
@@ -127,9 +138,9 @@ export class SubirArchivo implements OnInit {
     this.loading = true;
     console.log('Iniciando proceso de subida doble...');
 
-    // 1. Primero subimos el archivo físico al PHP
+    //SUBIR A SERVIDOR EXTERNO
     this.addonsService.subirArchivoReal(this.selectedFile, this.archivoData.url).pipe(
-      // 2. Si la subida física tiene éxito, registramos los datos en el Backend
+
       switchMap((resPhp) => {
         console.log('Archivo físico subido al PHP con éxito:', resPhp);
         return this.addonsService.subirArchivo(this.archivoData);

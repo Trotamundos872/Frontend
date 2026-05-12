@@ -3,10 +3,15 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { App } from './app/app';
-import { NgZone } from '@angular/core';
 
 bootstrapApplication(App, appConfig)
   .then((appRef) => {
-    // Application bootstrapped successfully
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/service-worker.js')
+          .catch((error) => console.error('Error al registrar el service worker:', error));
+      });
+    }
   })
   .catch((err) => console.error(err));

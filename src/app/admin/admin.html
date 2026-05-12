@@ -1,0 +1,80 @@
+<ng-container *ngIf="!loading; else cargando">
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <p class="h4">Reportes pendientes</p>
+            <hr>
+        </div>
+
+        <div *ngIf="error" class="alert alert-danger shadow-sm border-0 mb-4">{{ error }}</div>
+
+        <div class="row g-4">
+            <div class="col-12 col-md-6 col-lg-4" *ngFor="let r of reportes">
+                <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                    <div class="card-header bg-white border-0 pt-4 pb-0">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex align-items-center">
+
+                                <div>
+                                    <h6 class="mb-0 text-dark fw-bold">De: {{ r.usuario?.email }}</h6>
+                                    <a [href]="'mailto:' + r.usuario?.email"
+                                        class="btn btn-link p-0 text-decoration-none small text-primary">
+                                        <i class="bi bi-envelope me-1"></i>Contactar
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button (click)="deshabilitarEntidad(r)" class="btn btn-outline-warning btn-sm border-0"
+                                    title="Deshabilitar">
+                                    <img src="/gavel-solid-full.svg" alt="Deshabilitar"
+                                        style="width: 20px; height: 20px;">
+                                </button>
+                                <button (click)="eliminarReporte(r.id)" class="btn btn-outline-danger btn-sm border-0"
+                                    title="Eliminar reporte">
+                                    <img src="/trash-can-solid-full.svg" class="like-heart" alt="Eliminar reporte"
+                                        style="width: 20px; height: 20px;">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body py-4">
+                        <hr class="opacity-10 my-0 mb-3">
+                        <p class="card-text text-secondary mb-0" style="min-height: 80px; font-style: italic;">
+                            "{{ r.razon }}"
+                        </p>
+                        <hr class="opacity-10 my-3">
+                    </div>
+
+                    <div class="card-footer bg-light border-0 pb-4 pt-0 text-muted small">
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <span class="badge bg-secondary-subtle text-secondary ">
+                                Tipo: {{ r.tipo }}
+                            </span>
+                            <span class="badge bg-info-subtle text-info ">
+                                Ref ID: {{ r.referenciaId }}
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center text-secondary-emphasis">
+                            <i class="bi bi-calendar3 me-2"></i>
+                            {{ r.fecha | date:'dd/MM/yyyy HH:mm' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="reportes.length === 0" class="text-center py-5">
+            <div class="mb-3">
+                <i class="bi bi-check-circle text-success display-1"></i>
+            </div>
+            <h4 class="text-muted">No hay reportes pendientes</h4>
+            <p class="text-secondary small">¡Buen trabajo! La plataforma está limpia.</p>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #cargando>
+    <div class="d-flex flex-column justify-content-center align-items-center" style="height: 60vh;">
+        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+    </div>
+</ng-template>

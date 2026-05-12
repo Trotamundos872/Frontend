@@ -21,3 +21,17 @@
   margin-right: 15px;
   border: 1px solid var(--bs-border-color);
 }
+@media (max-width: 768px) {
+  .subheader-creator {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+    .text-body-secondary {
+    display: flex;
+      flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 10px;
+}
+
+}

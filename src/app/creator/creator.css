@@ -28,3 +28,39 @@
   padding: 20px;
   padding-top: 0px !important;
 }
+
+    .d-lg-flex {
+flex-direction: column;
+    }
+@media (max-width: 768px) {
+  .flex-column {
+    display: flex;
+            flex-wrap: nowrap !important;
+        flex-direction: row !important;
+  }
+
+  .sidebar {
+    min-height: 10px;
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+  }
+
+  .nav-link {
+    padding: 6px !important;
+    margin: 6px !important;
+  }
+  .subheader-creator {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+}
+
+
+
+
+
+
+
+

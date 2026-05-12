@@ -71,3 +71,25 @@ header nav {
 .btn_menu_mark:hover {
     transition: 0.2s ease;
 }
+
+#solo-movil{
+    display: none;
+}
+
+#solo-pc{
+    display: flex;
+}
+@media (max-width: 868px) {
+.hamburguesa {
+
+
+    margin-right: 0px;
+    padding: 0px;
+}
+#solo-movil{
+    display: flex;
+}
+#solo-pc{
+    display: none;
+}
+}

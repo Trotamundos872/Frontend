@@ -22,7 +22,6 @@ export class Estadisticas implements OnInit {
   ngOnInit() {
     this.cargarEstadisticas();
   }
-
   cargarEstadisticas() {
     this.loading = true;
     this.addonsService.getMisCreaciones().subscribe({
@@ -33,9 +32,7 @@ export class Estadisticas implements OnInit {
           this.cdr.detectChanges();
           return;
         }
-
         this.addonNames = addons.map(a => a.nombre!).filter(n => !!n);
-
         const requests = addons.map(addon => {
           const id = addon.id;
           if (id === undefined) return of([]);
@@ -54,15 +51,12 @@ export class Estadisticas implements OnInit {
             addons.forEach((addon, index) => {
               const archivos = results[index];
               if (archivos && archivos.length > 0) {
-                // Encontrar la versión más reciente (por fecha)
+  
                 const ultimaVersion = [...archivos].sort((a, b) => 
                   new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
                 )[0];
-
                 const dateObj = new Date(ultimaVersion.fecha);
-                // Usamos la fecha formateada como clave para agrupar (solo día)
                 const fechaKey = dateObj.toDateString(); 
-                
                 if (!statsByDate.has(fechaKey)) {
                   statsByDate.set(fechaKey, { rawDate: dateObj });
                 }
@@ -72,7 +66,7 @@ export class Estadisticas implements OnInit {
               }
             });
 
-            // Convertir a array y ordenar por fecha real
+     
             this.filas = Array.from(statsByDate.values()).sort((a, b) => 
               b.rawDate.getTime() - a.rawDate.getTime()
             );

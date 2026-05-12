@@ -1,74 +1,217 @@
 <header class="navbar navbar-expand-lg p-3 sticky-top shadow-sm">
-    <div class="container">
-        <!-- Botón Hamburguesa para móviles -->
-        <button class="navbar-toggler border-light mb-2" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+    <div class="container hamburguesa">
+        <a
+        [routerLink]="['/']"
+
+        title="Mis Creaciones">
+        <img
+            src="c.svg"
+            style="filter: invert(); width: 150px !important;"
+            width="150"
+            height="50"
+        ></a>
+
+        <button
+            class="navbar-toggler border-light mb-2"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarContent"
+            aria-controls="navbarContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
             <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
         </button>
 
-        <!-- Contenido colapsable -->
         <div class="collapse navbar-collapse" id="navbarContent">
+
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-center">
-                <li class="nav-item"><a class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap" routerLink="/">
-                        <img src="house-solid-full.svg" style="filter: invert();" width="16" height="16" class="me-2">
-                        Home</a></li>
-                <li class="nav-item"><a class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap"
-                        routerLink="/addons">
-                        <img src="hammer-solid-full.svg" style="filter: invert();" width="16" height="16" class="me-2">
-                        Add-Ons</a></li>
-                <li class="nav-item"><a class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap"
-                        routerLink="/maps">
-                        <img src="map-solid-full.svg" style="filter: invert();" width="16" height="16" class="me-2">
-                        Mapas</a></li>
-                <li class="nav-item"><a class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap"
-                        routerLink="/skins">
-                        <img src="palette-solid-full.svg" style="filter: invert();" width="16" height="16" class="me-2">
-                        Skins</a></li>
+                <li class="nav-item">
+                    <a
+                        class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap"
+                        routerLink="/"
+                    >
+                        <img
+                            src="house-solid-full.svg"
+                            style="filter: invert();"
+                            width="16"
+                            height="16"
+                            class="me-2"
+                        >
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap"
+                        routerLink="/addons"
+                    >
+                        <img
+                            src="hammer-solid-full.svg"
+                            style="filter: invert();"
+                            width="16"
+                            height="16"
+                            class="me-2"
+                        >
+                        Add-Ons
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap"
+                        routerLink="/maps"
+                    >
+                        <img
+                            src="map-solid-full.svg"
+                            style="filter: invert();"
+                            width="16"
+                            height="16"
+                            class="me-2"
+                        >
+                        Mapas
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link px-2 text-white d-inline-flex align-items-center text-nowrap"
+                        routerLink="/skins"
+                    >
+                        <img
+                            src="palette-solid-full.svg"
+                            style="filter: invert();"
+                            width="16"
+                            height="16"
+                            class="me-2"
+                        >
+                        Skins
+                    </a>
+                </li>
             </ul>
 
             <div class="text-end d-flex align-items-center justify-content-center">
-                <!--NO logueado -->
+
+                <!-- No logueado -->
                 <ng-container *ngIf="!isLoggedIn">
-                    <button type="button" class="btn btn-outline-light me-2" (click)="openLogin()">Accede</button>
-                    <button type="button" class="btn btn-warning" routerLink="/register">Regístrate</button>
+                    <button
+                        type="button"
+                        class="btn btn-outline-light me-2"
+                        (click)="openLogin()"
+                    >
+                        Accede
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-warning"
+                        routerLink="/register"
+                    >
+                        Regístrate
+                    </button>
                 </ng-container>
 
-                <!-- logueado -->
+                <!-- Logueado -->
                 <ng-container *ngIf="isLoggedIn">
                     <span class="text-white me-3 d-inline-flex align-items-center">
                         Hola, {{ userName }}
                     </span>
+
                     <span class="mark-divisor"></span>
 
-                    <button type="button" class="btn btn-link ms-2 p-0 btn_menu_mark" (click)="openInbox()">
-                        <img src="inbox-solid-full.svg" width="25" height="25" style="filter: brightness(0) invert(1);">
+                    <button
+                        type="button"
+                        class="btn btn-link ms-2 p-0 btn_menu_mark"
+                        (click)="openInbox()"
+                    >
+                        <img
+                            src="inbox-solid-full.svg"
+                            width="25"
+                            height="25"
+                            style="filter: brightness(0) invert(1);"
+                        >
                     </button>
 
-                    <button type="button" class="btn btn-link ms-2 p-0 btn_menu_mark" (click)="openProfile()">
-                        <img src="user-solid-full.svg" width="25" height="25" style="filter: brightness(0) invert(1);">
+                    <button
+                        type="button"
+                        class="btn btn-link ms-2 p-0 btn_menu_mark"
+                        (click)="openProfile()"
+                    >
+                        <img
+                            src="user-solid-full.svg"
+                            width="25"
+                            height="25"
+                            style="filter: brightness(0) invert(1);"
+                        >
                     </button>
 
                     <span *ngIf="isCreator" class="mark-divisor"></span>
 
-                    <button *ngIf="isCreator" type="button" class="btn btn-link ms-2 p-0 btn_menu_mark"
-                        routerLink="/creator/mis-creaciones">
-                        <img src="helmet-safety-solid-full.svg" width="30" height="30">
+                    <button
+                        *ngIf="isCreator"
+                        type="button"
+                        class="btn btn-link ms-2 p-0 btn_menu_mark"
+                        routerLink="/creator/mis-creaciones"
+                        title="Panel de Creador"
+                    >
+                        <img
+                            src="helmet-safety-solid-full.svg"
+                            width="30"
+                            height="30"
+                        >
                     </button>
+
+                    <span *ngIf="isAdmin" class="mark-divisor"></span>
+
+                    <a
+                        *ngIf="isAdmin"
+                        class="btn btn-link ms-2 p-0 btn_menu_mark"
+                        [routerLink]="['/admin']"
+                        title="Panel de Administrador"
+                    >
+                        <img
+                            src="gavel-solid-full.svg"
+                            width="28"
+                            height="28"
+                            style="filter: brightness(0) invert(1);"
+                        >
+                    </a>
                 </ng-container>
+
             </div>
         </div>
+
     </div>
 </header>
 
 <!-- Sidebar de Creador -->
-<div *ngIf="isCreator" class="creator-sidebar-fixed d-none d-lg-flex flex-column gap-3">
-    <a [routerLink]="['/creator/mis-creaciones']" class="sidebar-btn shadow" title="Mis Creaciones">
+<div
+    *ngIf="isCreator"
+    class="creator-sidebar-fixed d-none d-lg-flex flex-column gap-3"
+>
+    <a
+        [routerLink]="['/creator/mis-creaciones']"
+        class="sidebar-btn shadow"
+        title="Mis Creaciones"
+    >
         <img src="plus-solid-full.svg" width="20" height="20">
     </a>
-    <a [routerLink]="['/creator/estadisticas']" class="sidebar-btn shadow" title="Estadísticas">
+
+    <a
+        [routerLink]="['/creator/estadisticas']"
+        class="sidebar-btn shadow"
+        title="Estadísticas"
+    >
         <img src="chart-line-solid-full.svg" width="20" height="20">
     </a>
-    <a *ngIf="userId" [routerLink]="['/perfil', userId]" class="sidebar-btn shadow" title="Mi Perfil Público">
+
+    <a
+        *ngIf="userId"
+        [routerLink]="['/perfil', userId]"
+        class="sidebar-btn shadow"
+        title="Mi Perfil Público"
+    >
         <img src="user-solid-full.svg" width="20" height="20">
     </a>
 </div>

@@ -1,11 +1,13 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { Addons } from "../services/addons";
+import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { MarkdownPipe } from '../pipes/markdown.pipe';
+import { FormsModule } from '@angular/forms';
 
 //Interfaz para definir la estructura de los datos del addon
 interface AddonData {
@@ -23,7 +25,7 @@ interface AddonData {
 
 @Component({
   selector: 'app-addon',
-  imports: [CommonModule, NgbModule, RouterModule, MarkdownPipe],
+  imports: [CommonModule, NgbModule, RouterModule, MarkdownPipe, FormsModule],
   templateUrl: './addon.html',
   styleUrl: './addon.css',
 })
@@ -34,6 +36,17 @@ export class Addon implements OnInit {
   loading = true;
   likeLoading = false;
   haDadoLike = false;
+
+  // Reporte
+  mostrarFormReporte = false;
+  razonReporte = '';
+  archivoReportadoId: number | null = null;
+  reportando = false;
+  reporteExito = '';
+  reporteError = '';
+
+  private platformId = inject(PLATFORM_ID);
+  private http = inject(HttpClient);
 
   constructor(private route: ActivatedRoute, private addonsService: Addons, private cdr: ChangeDetectorRef) { }
 
@@ -129,6 +142,66 @@ export class Addon implements OnInit {
       error: (err) => {
         console.error('Error cargando archivos:', err);
         this.archivos = [];
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  abrirFormReporte() {
+    this.mostrarFormReporte = true;
+    this.reporteExito = '';
+    this.reporteError = '';
+    this.razonReporte = '';
+    this.archivoReportadoId = null;
+  }
+
+  cancelarReporte() {
+    this.mostrarFormReporte = false;
+    this.razonReporte = '';
+    this.reporteError = '';
+    this.archivoReportadoId = null;
+  }
+
+  enviarReporte() {
+    if (!this.valoresAddon?.id) return;
+    if (!this.razonReporte.trim()) {
+      this.reporteError = 'Por favor, escribe el motivo del reporte.';
+      return;
+    }
+
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('jwtToken') || '';
+    }
+
+    if (!token) {
+      this.reporteError = 'Debes iniciar sesión para reportar.';
+      return;
+    }
+
+    this.reportando = true;
+    this.reporteError = '';
+
+    const tipo = this.archivoReportadoId ? 'archivo' : 'addon';
+    const referenciaId = this.archivoReportadoId ?? this.valoresAddon.id;
+
+    this.http.post('http://localhost:8080/api/reporte', {
+      tipo,
+      referenciaId,
+      razon: this.razonReporte.trim()
+    }, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).subscribe({
+      next: () => {
+        this.reportando = false;
+        this.mostrarFormReporte = false;
+        this.reporteExito = '¡Reporte enviado! Gracias por ayudarnos a mejorar la plataforma.';
+        this.razonReporte = '';
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.reportando = false;
+        this.reporteError = err?.error?.error || 'Error al enviar el reporte. Inténtalo de nuevo.';
         this.cdr.detectChanges();
       }
     });

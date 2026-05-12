@@ -2,7 +2,11 @@
   <div class="card mb-4 shadow-sm" id="uploadCard">
     <div class="card-header d-flex justify-content-between align-items-center">
       <h5 class="mb-0">Subir Nuevo Archivo</h5>
-      <span class="badge bg-secondary">ID Addon: {{idAddon}}</span>
+
+      <span>
+        <span class="badge bg-secondary" style="margin-right: 10px;">ID Addon: {{idAddon}}</span>
+      <button class="btn btn-sm btn-outline-dark" [routerLink]="['/creator/mis-creaciones']">Volver</button>
+      </span>
     </div>
     <div class="card-body">
       <div *ngIf="errorMessage" class="alert alert-danger mb-3" role="alert">
