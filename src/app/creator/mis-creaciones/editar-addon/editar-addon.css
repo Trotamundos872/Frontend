@@ -2,3 +2,7 @@
 textarea {
     resize: vertical;
 }
+
+[data-theme='dark'] a, [data-theme='dark'] .mt-2 {
+color: rgb(13 253 233) !important;
+}

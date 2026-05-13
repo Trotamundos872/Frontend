@@ -200,12 +200,12 @@ export class Addons {
     });
   }
 
-  public deshabilitarAddon(id: number): Observable<any> {
+  public eliminarAddon(id: number): Observable<any> {
     let token = '';
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem("jwtToken") || '';
     }
-    return this.http.put<any>(`${this.baseUrl}/${id}/deshabilitar`, {}, {
+    return this.http.delete<any>(`${this.baseUrl}/${id}/eliminar`, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
   }
@@ -223,6 +223,10 @@ export class Addons {
         return of([]);
       })
     );
+  }
+
+  public getContarSeguidores(idCreador: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/api/subscripcion/contar-seguidores/${idCreador}`);
   }
 
   public registrarDescarga(idArchivo: number): Observable<any> {

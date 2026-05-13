@@ -31,6 +31,7 @@ export class Perfil implements OnInit {
   loadingAddons = true;
   subscrito = false;
   subLoading = false;
+  totalSeguidores = 0;
 
   // Reporte
   mostrarFormReporte = false;
@@ -53,6 +54,7 @@ export class Perfil implements OnInit {
         this.cargarPerfil(id);
         this.cargarAddons(id);
         this.checkEstadoSub(id);
+        this.cargarSeguidores(id);
       } else {
         this.loading = false;
         this.loadingAddons = false;
@@ -70,12 +72,30 @@ export class Perfil implements OnInit {
     });
   }
 
+  private cargarSeguidores(id: string) {
+    this.addonsService.getContarSeguidores(Number(id)).subscribe({
+      next: (res) => {
+        this.totalSeguidores = res.total;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al cargar seguidores:', err);
+      }
+    });
+  }
+
   //subscribirte
   public toggleSub() {
     this.subLoading = true;
     this.addonsService.toggleSubscripcion(Number(this.id)).subscribe({
       next: (res) => {
         this.subscrito = !this.subscrito;
+        // Actualizamos el contador localmente para respuesta inmediata
+        if (this.subscrito) {
+          this.totalSeguidores++;
+        } else {
+          this.totalSeguidores--;
+        }
         this.subLoading = false;
         this.cdr.detectChanges();
       },
