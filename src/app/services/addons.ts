@@ -200,6 +200,16 @@ export class Addons {
     });
   }
 
+  public deshabilitarAddon(id: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem("jwtToken") || '';
+    }
+    return this.http.put<any>(`${this.baseUrl}/${id}/deshabilitar`, {}, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+  }
+
   public getDetallesSubscritos(): Observable<any[]> {
     let token = '';
     if (isPlatformBrowser(this.platformId)) {

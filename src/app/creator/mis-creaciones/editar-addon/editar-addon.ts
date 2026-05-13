@@ -27,6 +27,7 @@ export class EditarAddon implements OnInit, AfterViewInit {
   idAddon: number | null = null;
   loading = true;
   saving = false;
+  disabling = false;
   errorMessage = '';
   successMessage = '';
 
@@ -157,6 +158,32 @@ export class EditarAddon implements OnInit, AfterViewInit {
       error: (err) => {
         this.saving = false;
         this.errorMessage = 'Error al actualizar el Addon: ' + (err.error?.error || err.message || 'Error desconocido');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  deshabilitar() {
+    if (!confirm('¿Estás seguro de que deseas deshabilitar este Addon? Esta acción no se puede deshacer fácilmente.')) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.disabling = true;
+
+    this.addonsService.deshabilitarAddon(this.idAddon!).subscribe({
+      next: () => {
+        this.disabling = false;
+        this.successMessage = '¡Addon deshabilitado correctamente!';
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.router.navigate(['/creator/mis-creaciones']);
+        }, 2000);
+      },
+      error: (err) => {
+        this.disabling = false;
+        this.errorMessage = 'Error al deshabilitar el Addon: ' + (err.error?.error || err.message || 'Error desconocido');
         this.cdr.detectChanges();
       }
     });

@@ -178,7 +178,7 @@ export class NgbdRecoveryModalContent {
       </div>
 
       <p class="mt-2">¿No tienes Cuenta? <a routerLink="/register" (click)="activeModal.dismiss('Registro')" class="link" style="cursor:pointer; color:blue;">Registrarte</a></p>
-      <p class="mt-1"><a (click)="activeModal.close('Recuperar')" class="link" style="cursor:pointer; color:blue;">¿Has olvidado tu contraseña?</a></p>
+      <p class="mt-2"><a (click)="activeModal.close('Recuperar')" class="link" style="cursor:pointer; color:blue;">¿Has olvidado tu contraseña?</a></p>
     </div>
     
     <div class="modal-footer">

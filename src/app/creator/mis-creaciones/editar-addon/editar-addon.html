@@ -75,12 +75,19 @@
           <div>{{ successMessage }}</div>
         </div>
         
-        <div class="d-flex gap-2 mt-4">
-          <button type="submit" class="btn btn-dark" [disabled]="saving">
-            <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
-            Guardar Cambios
+        <div class="d-flex gap-2 mt-4 justify-content-between">
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-dark" [disabled]="saving || disabling">
+              <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+              Guardar Cambios
+            </button>
+            <button type="button" class="btn btn-outline-secondary" [routerLink]="['/creator/mis-creaciones']">Cancelar</button>
+          </div>
+          
+          <button type="button" class="btn btn-danger" (click)="deshabilitar()" [disabled]="saving || disabling">
+            <span *ngIf="disabling" class="spinner-border spinner-border-sm me-2"></span>
+            Deshabilitar Addon
           </button>
-          <button type="button" class="btn btn-outline-secondary" [routerLink]="['/creator/mis-creaciones']">Cancelar</button>
         </div>
       </form>
     </div>
