@@ -20,3 +20,6 @@ sudo docker compose up --build
 cd "c:\Users\Marcos y Ezequiel\Desktop\TFG\Frontend"
 npm.cmd run sync:config
 npm.cmd start
+
+
+docker exec -it postgres_db psql -U postgres -d mydb
